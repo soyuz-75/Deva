@@ -32,12 +32,27 @@ npm run dev              # http://localhost:3000
 
 You need ffmpeg: `brew install ffmpeg`, or `pip install imageio-ffmpeg`, which the script finds on its own.
 
-The current showreel (`SHOWREELV1.v2.mov`) is only **640×360**, which looks soft full-screen on a large display. When a 1080p export exists, drop it in `media/source/video/` and re-run the script. It never upscales, and it caps output at 1080p. Keep sources under 100 MB, GitHub's per-file limit; the 527 MB master should stay on Google Drive.
+### Showreel files
+
+Source video exports stay in Google Drive (`Deva/Videos`). They're git-ignored because GitHub's upload page rejects anything over 25 MB. Only the compressed web versions are committed:
+
+| File | Used on | Size |
+| --- | --- | --- |
+| `media/web/video/showreel-1080.mp4` | screens ≥ 1000 px wide | ~27 MB |
+| `media/web/video/showreel-720.mp4` | phones, small screens, and fallback | ~14 MB |
+
+They're currently built from `SHOWREELV1.mov` (1080p, HEVC). HEVC doesn't play in Chrome or Firefox, which is another reason the script always converts to H.264. To update the reel, download the new export from Drive and run:
+
+```sh
+VIDEO_SRC=~/Downloads/SHOWREELV3.mov npm run media -- video
+```
+
+Then commit `media/web/video/` with git or GitHub Desktop (limit 100 MB per file). GitHub's web upload page caps files at 25 MB, so the 1080p file doesn't fit there.
 
 ## Why the showreel didn't play right away, and what fixed it
 
 1. **The design fell back to a Google Drive player.** Drive's `/preview` iframe never autoplays, and it's slow. The site now plays a video file it hosts itself.
-2. **The file's index was at the end.** Straight from the editor, `SHOWREELV1.v2.mov` had its `moov` atom after 16 MB of video data, so the browser had to download almost all of it before showing frame one. The script re-encodes it with `-movflags +faststart`, which puts the index first, and shrinks it to **4.6 MB** (H.264 + AAC).
+2. **The file's index was at the end.** Straight from the editor, `SHOWREELV1.v2.mov` had its `moov` atom after 16 MB of video data, so the browser had to download almost all of it before showing frame one. The script re-encodes it with `-movflags +faststart`, which puts the index first, and outputs H.264 + AAC (1080p for desktop, 720p for phones).
 3. **Autoplay rules.** Browsers only autoplay video that is `muted` and, on iOS, `playsinline`. The markup has `autoplay muted loop playsinline`, and `main.js` also sets the `muted` property, calls `play()`, and retries on the first tap or scroll when the browser still refuses (for example iOS Low Power Mode). Sound only turns on from the **Son** button, because browsers only allow sound after a user click.
 4. **No black flash.** A poster frame is preloaded and sits behind the video until it paints.
 5. **Being polite.** The reel pauses when it's scrolled off-screen or the tab is hidden. With *Reduce motion* or data-saver turned on, it doesn't autoplay; the poster shows instead.
@@ -46,7 +61,6 @@ Tested in headless Chromium: the reel is playing about 350 ms after navigation, 
 
 ## To do before launch
 
-- [ ] 1080p showreel export
 - [ ] Real email and Instagram link in the footer (currently `hello@deva.film` and `#`, as in the mock-up)
 - [ ] Alt text describing each photo
 - [ ] Favicon and custom domain

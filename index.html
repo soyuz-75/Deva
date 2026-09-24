@@ -25,9 +25,10 @@
   <!-- ───────────── Hero: showreel ───────────── -->
   <section class="hero" aria-label="Showreel 2026">
     <!--
-      Autoplay needs muted + playsinline + autoplay. The file is a faststart
-      H.264/AAC MP4 built by scripts/prepare-media.sh, so it starts playing
-      while it downloads. Sound is turned on with the "Son" button.
+      Autoplay needs muted + playsinline + autoplay. The files are faststart
+      H.264/AAC MP4s built by scripts/prepare-media.sh, so they start playing
+      while they download: 1080p on wide screens, 720p on phones (and as the
+      fallback if the 1080p file is missing). Sound is turned on with "Son".
     -->
     <video
       class="hero__video"
@@ -39,7 +40,8 @@
       preload="auto"
       disablepictureinpicture
       poster="media/web/video/showreel-poster.jpg">
-      <source src="media/web/video/showreel.mp4" type="video/mp4">
+      <source src="media/web/video/showreel-1080.mp4" type="video/mp4" media="(min-width: 1000px)">
+      <source src="media/web/video/showreel-720.mp4" type="video/mp4">
     </video>
 
     <div class="hero__fade" aria-hidden="true"></div>

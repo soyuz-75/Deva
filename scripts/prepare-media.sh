@@ -3,8 +3,12 @@
 # Turn the raw source media into small, web-ready files.
 #
 #   media/source/video/<showreel>.mov|.mp4   ->  media/web/video/
-#       showreel.mp4         H.264 + AAC, max 1080p, "faststart" (plays while downloading)
+#       showreel-1080.mp4    H.264 + AAC, 1080p, "faststart" (plays while downloading) — desktop
+#       showreel-720.mp4     same at 720p, lighter — phones / small screens
 #       showreel-poster.jpg  still shown instantly while the video buffers
+#
+#   Sources are converted to H.264 even when already MP4/MOV: exports in HEVC
+#   (e.g. SHOWREELV1.mov) don't play in Chrome or Firefox. Sources never upscale.
 #
 #   media/source/photos/*.jpg|jpeg|png|tif   ->  media/web/photos/
 #       <slug>-{1000,2000}.{webp,jpg}
@@ -23,8 +27,8 @@
 #
 # Tunables (env vars):
 #   VIDEO_SRC=path      source video (default: newest file in media/source/video)
-#   MAX_HEIGHT=1080     never upscales; smaller sources keep their size
-#   VIDEO_CRF=23        quality (higher = smaller file)
+#   CRF_1080=24         1080p quality (higher = smaller file; 24 ≈ 27 MB for the 53 s reel)
+#   CRF_720=24          720p quality (24 ≈ 14 MB for the 53 s reel)
 #   POSTER_AT=1         timestamp (s) used for the poster frame
 
 set -euo pipefail
@@ -35,8 +39,8 @@ SRC_PHOTO_DIR="$ROOT/media/source/photos"
 OUT_VIDEO_DIR="$ROOT/media/web/video"
 OUT_PHOTO_DIR="$ROOT/media/web/photos"
 
-MAX_HEIGHT="${MAX_HEIGHT:-1080}"
-VIDEO_CRF="${VIDEO_CRF:-23}"
+CRF_1080="${CRF_1080:-24}"
+CRF_720="${CRF_720:-24}"
 POSTER_AT="${POSTER_AT:-1}"
 PHOTO_WIDTHS=(1000 2000)
 
@@ -64,12 +68,16 @@ prepare_video() {
   mkdir -p "$OUT_VIDEO_DIR"
   echo "▸ Source video: $src"
 
-  echo "▸ showreel.mp4 (H.264/AAC, ≤${MAX_HEIGHT}p, faststart)"
-  ff -i "$src" \
-    -vf "scale=-2:'min(${MAX_HEIGHT},ih)':flags=lanczos" \
-    -c:v libx264 -profile:v high -preset slow -crf "$VIDEO_CRF" -pix_fmt yuv420p \
-    -c:a aac -b:a 128k -movflags +faststart \
-    "$OUT_VIDEO_DIR/showreel.mp4"
+  local height crf
+  for height in 1080 720; do
+    crf="CRF_$height"; crf="${!crf}"
+    echo "▸ showreel-$height.mp4 (H.264/AAC, ≤${height}p, crf $crf, faststart)"
+    ff -i "$src" \
+      -vf "scale=-2:'min($height,ih)':flags=lanczos" \
+      -c:v libx264 -profile:v high -preset slow -crf "$crf" -pix_fmt yuv420p \
+      -c:a aac -b:a 128k -movflags +faststart \
+      "$OUT_VIDEO_DIR/showreel-$height.mp4"
+  done
 
   echo "▸ showreel-poster.jpg"
   ff -ss "$POSTER_AT" -i "$src" -frames:v 1 -q:v 2 "$OUT_VIDEO_DIR/showreel-poster.jpg"

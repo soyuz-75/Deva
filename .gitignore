@@ -1,2 +1,6 @@
 .DS_Store
 node_modules/
+
+# Source videos are too big for GitHub: keep them in Google Drive (Deva/Videos).
+media/source/video/*
+!media/source/video/SHOWREELV1.v2.mov
