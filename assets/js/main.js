@@ -57,11 +57,17 @@
   }
   document.addEventListener("visibilitychange", sync);
 
-  // If the file can't be played at all, the poster (CSS background) stays up.
-  video.addEventListener("error", () => { if (soundBtn) soundBtn.hidden = true; }, true);
+  // If no file can be played at all, the poster (CSS background) stays up and
+  // the sound button goes. A single <source> failing is not enough: the
+  // browser then falls back to the next one (e.g. 1080p missing → 720p).
+  const hideSound = () => { if (soundBtn) soundBtn.hidden = true; };
+  video.addEventListener("error", hideSound);
+  const lastSource = video.querySelector("source:last-of-type");
+  if (lastSource) lastSource.addEventListener("error", hideSound);
 
   if (soundBtn) {
-    soundBtn.hidden = false;
+    // Sources may already have all failed before this deferred script ran.
+    soundBtn.hidden = video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE;
     soundBtn.addEventListener("click", () => {
       const on = video.muted; // toggling → sound on if it was muted
       video.muted = !on;
