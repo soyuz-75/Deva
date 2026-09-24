@@ -1,93 +1,78 @@
 /*
- * Background showreel: make it start as soon as possible, everywhere.
+ * Hero showreel: start as soon as possible, silently, everywhere.
  *
- * Browsers only allow autoplay when the video is muted. Setting the `muted`
- * attribute in HTML is not always enough (some browsers and frameworks only
- * read the *property*), so we set it again here, call play() explicitly,
- * and fall back to starting on the first user interaction if the browser
- * still refuses (e.g. iOS Low Power Mode).
+ * Browsers only allow autoplay when the video is muted. The HTML attribute is
+ * not always honoured on its own, so the `muted` property is set again here,
+ * play() is called explicitly, and if the browser still refuses (e.g. iOS Low
+ * Power Mode) playback starts on the first tap, key press or scroll.
+ * The "Son" button then turns sound on — a user click, so browsers allow it.
  */
-(function heroVideo() {
+(function showreel() {
   const video = document.getElementById("hero-video");
+  const soundBtn = document.getElementById("sound-toggle");
   if (!video) return;
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const saveData = navigator.connection && navigator.connection.saveData;
-  if (reduceMotion || saveData) {
-    // Keep the poster only; don't download the loop at all.
-    video.removeAttribute("autoplay");
-    video.preload = "none";
-    return;
-  }
+  const saveData = !!(navigator.connection && navigator.connection.saveData);
+  const autoplay = !reduceMotion && !saveData;
 
   video.muted = true;
   video.defaultMuted = true;
   video.playsInline = true;
   video.setAttribute("webkit-playsinline", "");
 
-  const reveal = () => video.classList.add("is-playing");
-  video.addEventListener("playing", reveal, { once: true });
+  if (!autoplay) {
+    video.removeAttribute("autoplay");
+    video.preload = "metadata";
+  }
 
-  const tryPlay = () => {
+  const play = () => {
     const p = video.play();
-    if (p && typeof p.catch === "function") {
-      p.catch(() => {
-        // Autoplay blocked: start on the first gesture anywhere on the page.
-        const resume = () => {
-          video.play().catch(() => {});
-          ["pointerdown", "touchstart", "keydown", "scroll"].forEach((e) =>
-            window.removeEventListener(e, resume)
-          );
-        };
-        ["pointerdown", "touchstart", "keydown", "scroll"].forEach((e) =>
-          window.addEventListener(e, resume, { once: true, passive: true })
-        );
-      });
-    }
+    return p && typeof p.catch === "function" ? p : Promise.resolve();
   };
 
-  // Play as soon as there is enough data; also try immediately.
-  if (video.readyState >= 2) tryPlay();
-  else video.addEventListener("loadeddata", tryPlay, { once: true });
-  tryPlay();
+  const gestures = ["pointerdown", "touchstart", "keydown", "scroll"];
+  const resumeOnGesture = () => {
+    const resume = () => {
+      gestures.forEach((e) => window.removeEventListener(e, resume));
+      play().catch(() => {});
+    };
+    gestures.forEach((e) => window.addEventListener(e, resume, { passive: true }));
+  };
 
-  // Pause when off-screen / tab hidden to save battery, resume when back.
-  let visible = true;
+  let wanted = autoplay; // should the reel be playing when visible?
+  if (autoplay) play().catch(resumeOnGesture);
+
+  // Pause off-screen and in background tabs; resume when back.
+  let onScreen = true;
+  const sync = () => {
+    if (wanted && onScreen && !document.hidden) play().catch(() => {});
+    else video.pause();
+  };
   if ("IntersectionObserver" in window) {
     new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
-      if (visible && !document.hidden) tryPlay();
-      else video.pause();
+      onScreen = entry.isIntersecting;
+      sync();
     }).observe(video);
   }
-  document.addEventListener("visibilitychange", () => {
-    if (document.hidden) video.pause();
-    else if (visible) tryPlay();
-  });
-})();
+  document.addEventListener("visibilitychange", sync);
 
-/* Full showreel (with sound) in a fullscreen dialog. */
-(function reelPlayer() {
-  const dialog = document.getElementById("reel");
-  if (!dialog) return;
-  const player = dialog.querySelector("video");
-  const hero = document.getElementById("hero-video");
+  // If the file can't be played at all, the poster (CSS background) stays up.
+  video.addEventListener("error", () => { if (soundBtn) soundBtn.hidden = true; }, true);
 
-  document.querySelectorAll("[data-open-reel]").forEach((btn) =>
-    btn.addEventListener("click", () => {
-      dialog.showModal();
-      if (hero) hero.pause();
-      player.play().catch(() => {});
-    })
-  );
-
-  const close = () => dialog.close();
-  dialog.querySelector("[data-close-reel]").addEventListener("click", close);
-  dialog.addEventListener("click", (e) => { if (e.target === dialog) close(); });
-  dialog.addEventListener("close", () => {
-    player.pause();
-    if (hero) hero.play().catch(() => {});
-  });
+  if (soundBtn) {
+    soundBtn.hidden = false;
+    soundBtn.addEventListener("click", () => {
+      const on = video.muted; // toggling → sound on if it was muted
+      video.muted = !on;
+      soundBtn.textContent = on ? "Son — on" : "Son — off";
+      soundBtn.setAttribute("aria-pressed", String(on));
+      if (on) {
+        wanted = true;
+        play().catch(() => {});
+      }
+    });
+  }
 })();
 
 document.querySelectorAll("[data-year]").forEach((el) => {

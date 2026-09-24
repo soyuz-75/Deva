@@ -1,60 +1,57 @@
+/* Values taken from the Claude Design mock-up "Deva Site.dc.html". */
 :root {
-  --bg: #0b0b0b;
-  --fg: #f2efe9;
-  --muted: #8f8a82;
-  --line: rgba(242, 239, 233, 0.14);
-  --serif: "Playfair Display", Georgia, serif;
-  --sans: "Inter", system-ui, -apple-system, sans-serif;
-  --gutter: clamp(16px, 4vw, 48px);
+  --black: #0B0B0B;
+  --paper: #F1EEE8;
+  --ink: #141414;
+  --muted: #8A867E;
+  --rule: #D9D5CD;
+  --accent: #B8862B;
+  --sans: Archivo, Helvetica, Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+  --pad-x: clamp(16px, 4vw, 56px);
+  --gap-y: clamp(56px, 11vw, 160px);
+  --row-gap: clamp(56px, 6vw, 80px);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html, body { margin: 0; padding: 0; background: var(--black); }
 
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--fg);
-  font: 300 16px/1.6 var(--sans);
+  font-family: var(--sans);
+  color: var(--ink);
   -webkit-font-smoothing: antialiased;
 }
 
-a { color: inherit; }
-img, video { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+a:hover { color: var(--accent); }
+::selection { background: #1A1A1A; color: var(--paper); }
 
-/* ─── Header ─── */
-.site-header {
-  position: fixed;
-  inset: 0 0 auto 0;
-  z-index: 10;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px var(--gutter);
-  mix-blend-mode: difference;
-}
-.wordmark {
-  font: italic 400 1.5rem/1 var(--serif);
-  text-decoration: none;
-}
-.site-nav { display: flex; gap: clamp(16px, 3vw, 36px); }
-.site-nav a {
-  font-size: 0.8rem;
-  letter-spacing: 0.14em;
+.mono {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  text-decoration: none;
 }
 
-/* ─── Hero / background showreel ─── */
+.wordmark {
+  font-family: var(--sans);
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* ─── Hero ─── */
 .hero {
   position: relative;
+  width: 100%;
   height: 100vh;
   height: 100svh;
+  min-height: 420px;
   overflow: hidden;
-  display: grid;
-  place-items: end start;
-  /* Poster as CSS background too, so something shows even before <video> lays out. */
+  color: var(--paper);
+  /* Same frame as the poster, shown before the <video> element paints. */
   background: #000 url("../../media/web/video/showreel-poster.jpg") center / cover no-repeat;
 }
 .hero__video {
@@ -63,146 +60,108 @@ img, video { display: block; max-width: 100%; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  opacity: 0;
-  transition: opacity 0.8s ease;
-}
-.hero__video.is-playing { opacity: 1; }
-.hero__shade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0) 55%);
-}
-.hero__content {
-  position: relative;
-  padding: 0 var(--gutter) clamp(48px, 10vh, 120px);
-}
-.eyebrow {
-  margin: 0 0 8px;
-  font-size: 0.8rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--fg);
-  opacity: 0.8;
-}
-.hero__title {
-  margin: 0 0 28px;
-  font: italic 400 clamp(4rem, 16vw, 13rem)/0.9 var(--serif);
-  letter-spacing: -0.02em;
-}
-.hero__scroll {
-  position: absolute;
-  right: var(--gutter);
-  bottom: 32px;
-  font-size: 0.7rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  text-decoration: none;
-  opacity: 0.7;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 22px;
-  border: 1px solid var(--fg);
-  border-radius: 999px;
   background: transparent;
-  color: var(--fg);
-  font: 400 0.8rem/1 var(--sans);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
 }
-.btn:hover, .btn:focus-visible { background: var(--fg); color: var(--bg); }
-.btn__icon { font-size: 0.7em; }
-
-/* ─── Sections ─── */
-.section {
-  padding: clamp(64px, 12vh, 140px) var(--gutter);
-  border-top: 1px solid var(--line);
+.hero__fade {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 140px;
+  pointer-events: none;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, .45), transparent);
 }
-.section__title {
-  margin: 0 0 40px;
-  font: italic 400 clamp(2rem, 5vw, 3.5rem)/1.1 var(--serif);
-}
-.section--split {
-  display: grid;
-  gap: 24px;
-}
-@media (min-width: 900px) {
-  .section--split { grid-template-columns: 1fr 2fr; }
-}
-.prose { max-width: 60ch; font-size: 1.1rem; }
-.prose p { margin: 0 0 1em; }
-
-/* ─── Work grid ─── */
-.grid {
-  display: grid;
-  gap: clamp(16px, 3vw, 40px);
-}
-@media (min-width: 900px) {
-  .grid { grid-template-columns: repeat(2, 1fr); }
-}
-.card { margin: 0; }
-.card img {
-  width: 100%;
-  height: auto;
-  aspect-ratio: 3 / 2;
-  object-fit: cover;
-  background: #1a1a1a;
-  transition: transform 0.6s ease;
-}
-.card picture { display: block; overflow: hidden; }
-.card:hover img { transform: scale(1.03); }
-.card__meta {
+.hero__header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: space-between;
-  gap: 16px;
-  padding-top: 12px;
+  align-items: baseline;
+  gap: 20px;
+  padding: 22px 26px;
 }
-.card__meta h3 { margin: 0; font-weight: 400; font-size: 1rem; }
-.card__meta p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+.brand {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.brand .mono { opacity: .8; }
+.nav { display: flex; gap: 24px; }
+
+.hero__sound {
+  position: absolute;
+  right: 26px;
+  bottom: 24px;
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--paper);
+}
+.hero__sound:hover { opacity: .6; }
+.hero__sound[hidden] { display: none; }
+.hero__label {
+  position: absolute;
+  left: 26px;
+  bottom: 24px;
+  pointer-events: none;
+}
+
+/* ─── Photos ─── */
+.photos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-y);
+  padding: var(--gap-y) var(--pad-x);
+  background: var(--paper);
+}
+.photo {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.photo figcaption {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+}
+
+.row { display: flex; }
+.row--a { flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: var(--row-gap) 4%; }
+.row--b { justify-content: flex-end; }
+.row--c { flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: var(--row-gap) 6%; }
+.row--d { justify-content: flex-start; padding-left: clamp(0px, 8vw, 140px); }
+.row--e { flex-wrap: wrap; justify-content: space-around; align-items: flex-start; gap: var(--row-gap) 4%; }
+
+.photo--02 { flex: 0 1 56%; min-width: min(100%, 420px); }
+.photo--03 { flex: 0 1 32%; min-width: min(100%, 300px); padding-top: clamp(0px, 14vw, 220px); }
+.photo--04 { flex: 0 1 64%; min-width: min(100%, 420px); }
+.photo--05 { flex: 0 1 34%; min-width: min(100%, 300px); }
+.photo--06 { flex: 0 1 46%; min-width: min(100%, 360px); }
+.photo--07 { flex: 0 1 72%; min-width: min(100%, 420px); }
+.photo--08 { flex: 0 1 44%; min-width: min(100%, 360px); }
+.photo--09 { flex: 0 1 30%; min-width: min(100%, 280px); padding-top: clamp(0px, 10vw, 160px); }
 
 /* ─── Footer ─── */
-.site-footer {
-  padding: 32px var(--gutter);
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 0.8rem;
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 40px var(--pad-x) 48px;
+  border-top: 1px solid var(--rule);
+  background: var(--paper);
+  color: var(--ink);
 }
-
-/* ─── Full reel dialog ─── */
-.reel {
-  width: 100vw;
-  max-width: none;
-  height: 100vh;
-  max-height: none;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: #000;
-}
-.reel::backdrop { background: #000; }
-.reel[open] { display: grid; place-items: center; }
-.reel__video { width: 100%; max-height: 100vh; }
-.reel__close {
-  position: absolute;
-  top: 16px;
-  right: 20px;
-  z-index: 1;
-  border: 0;
-  background: none;
-  color: #fff;
-  font-size: 2.2rem;
-  line-height: 1;
-  cursor: pointer;
-}
-
-/* ─── Motion preferences ─── */
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .hero__video { display: none; }
-  .card img { transition: none; }
-}
+.footer__links { display: flex; gap: 26px; flex-wrap: wrap; }
+.muted { color: var(--muted); }

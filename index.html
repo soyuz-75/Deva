@@ -1,142 +1,154 @@
 <!doctype html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Deva — Director</title>
-  <meta name="description" content="Deva — film director. Showreel, selected work and contact.">
-  <meta name="theme-color" content="#0b0b0b">
-
-  <!-- Open Graph / social previews -->
+  <title>Deva — Réalisatrice</title>
+  <meta name="description" content="Deva, réalisatrice. Showreel 2026 et photographies.">
+  <meta name="theme-color" content="#0B0B0B">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Deva — Director">
-  <meta property="og:description" content="Showreel, selected work and contact.">
+  <meta property="og:title" content="Deva — Réalisatrice">
+  <meta property="og:description" content="Showreel 2026 et photographies.">
   <meta property="og:image" content="media/web/video/showreel-poster.jpg">
 
-  <!--
-    Fetch the poster first so the hero is never black while the loop buffers.
-  -->
+  <!-- Poster first, so the hero is never an empty black box while the reel buffers. -->
   <link rel="preload" as="image" href="media/web/video/showreel-poster.jpg" fetchpriority="high">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css">
   <script src="assets/js/main.js" defer></script>
 </head>
 <body>
-  <header class="site-header">
-    <a class="wordmark" href="#top">Deva</a>
-    <nav class="site-nav" aria-label="Main">
-      <a href="#work">Work</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
-  </header>
+  <!-- ───────────── Hero: showreel ───────────── -->
+  <section class="hero" aria-label="Showreel 2026">
+    <!--
+      Autoplay needs muted + playsinline + autoplay. The file is a faststart
+      H.264/AAC MP4 built by scripts/prepare-media.sh, so it starts playing
+      while it downloads. Sound is turned on with the "Son" button.
+    -->
+    <video
+      class="hero__video"
+      id="hero-video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      disablepictureinpicture
+      poster="media/web/video/showreel-poster.jpg">
+      <source src="media/web/video/showreel.mp4" type="video/mp4">
+    </video>
 
-  <main id="top">
-    <!-- ───────────── Hero: background showreel ───────────── -->
-    <section class="hero" aria-label="Showreel">
-      <!--
-        Autoplay requirements (all browsers): muted + playsinline + autoplay.
-        The loop file is a short, silent, web-optimised cut (see scripts/prepare-media.sh);
-        the full reel with sound opens in the player below.
-      -->
-      <video
-        class="hero__video"
-        id="hero-video"
-        autoplay
-        muted
-        loop
-        playsinline
-        preload="auto"
-        disablepictureinpicture
-        poster="media/web/video/showreel-poster.jpg"
-        aria-hidden="true">
-        <source src="media/web/video/showreel-loop.mp4" type="video/mp4">
-      </video>
-      <div class="hero__shade" aria-hidden="true"></div>
+    <div class="hero__fade" aria-hidden="true"></div>
 
-      <div class="hero__content">
-        <p class="eyebrow">Director</p>
-        <h1 class="hero__title">Deva</h1>
-        <button class="btn" type="button" data-open-reel>
-          <span class="btn__icon" aria-hidden="true">▶</span> Watch showreel
-        </button>
+    <header class="hero__header">
+      <div class="brand">
+        <span class="wordmark">Deva</span>
+        <span class="mono">Réalisatrice</span>
       </div>
+      <nav class="mono nav" aria-label="Navigation">
+        <a href="#photos">Photos</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
 
-      <a class="hero__scroll" href="#work" aria-label="Scroll to work">Scroll</a>
-    </section>
+    <button class="mono hero__sound" id="sound-toggle" type="button" aria-pressed="false" hidden>Son — off</button>
+    <span class="mono hero__label">Showreel 2026</span>
+  </section>
 
-    <!-- ───────────── Selected work ───────────── -->
-    <section class="section" id="work">
-      <h2 class="section__title">Selected work</h2>
-      <!--
-        One <article> per project. Images come from media/web/photos/ and are
-        generated in 3 widths by scripts/prepare-media.sh.
-      -->
-      <div class="grid">
-        <article class="card">
-          <picture>
-            <source type="image/webp" srcset="media/web/photos/photo1-800.webp 800w, media/web/photos/photo1-1600.webp 1600w, media/web/photos/photo1-2400.webp 2400w" sizes="(min-width: 900px) 50vw, 100vw">
-            <img src="media/web/photos/photo1-1600.jpg" alt="Still from project one" loading="lazy" decoding="async" width="1600" height="1067">
-          </picture>
-          <div class="card__meta"><h3>Project title</h3><p>Commercial · 2026</p></div>
-        </article>
-        <article class="card">
-          <picture>
-            <source type="image/webp" srcset="media/web/photos/deva-foto-avion-sur-snobord-800.webp 800w, media/web/photos/deva-foto-avion-sur-snobord-1600.webp 1600w, media/web/photos/deva-foto-avion-sur-snobord-2400.webp 2400w" sizes="(min-width: 900px) 50vw, 100vw">
-            <img src="media/web/photos/deva-foto-avion-sur-snobord-1600.jpg" alt="Still from project two" loading="lazy" decoding="async" width="1600" height="1067">
-          </picture>
-          <div class="card__meta"><h3>Project title</h3><p>Music video · 2026</p></div>
-        </article>
-        <article class="card">
-          <picture>
-            <source type="image/webp" srcset="media/web/photos/img-3825-800.webp 800w, media/web/photos/img-3825-1600.webp 1600w, media/web/photos/img-3825-2400.webp 2400w" sizes="(min-width: 900px) 50vw, 100vw">
-            <img src="media/web/photos/img-3825-1600.jpg" alt="Still from project three" loading="lazy" decoding="async" width="1600" height="1067">
-          </picture>
-          <div class="card__meta"><h3>Project title</h3><p>Short film · 2025</p></div>
-        </article>
-        <article class="card">
-          <picture>
-            <source type="image/webp" srcset="media/web/photos/ohoto3-2-800.webp 800w, media/web/photos/ohoto3-2-1600.webp 1600w, media/web/photos/ohoto3-2-2400.webp 2400w" sizes="(min-width: 900px) 50vw, 100vw">
-            <img src="media/web/photos/ohoto3-2-1600.jpg" alt="Still from project four" loading="lazy" decoding="async" width="1600" height="1067">
-          </picture>
-          <div class="card__meta"><h3>Project title</h3><p>Documentary · 2025</p></div>
-        </article>
-      </div>
-    </section>
+  <!-- ───────────── Photos ───────────── -->
+  <main class="photos" id="photos">
+    <figure class="photo">
+        <picture>
+          <source type="image/webp" srcset="media/web/photos/photo1-1000.webp 1000w, media/web/photos/photo1-2000.webp 2000w" sizes="100vw">
+          <img src="media/web/photos/photo1-1000.jpg" srcset="media/web/photos/photo1-1000.jpg 1000w, media/web/photos/photo1-2000.jpg 2000w" sizes="100vw" width="2000" height="1239" alt="Deva — photographie 01" loading="lazy" decoding="async">
+        </picture>
+        <figcaption>01</figcaption>
+      </figure>
 
-    <!-- ───────────── About ───────────── -->
-    <section class="section section--split" id="about">
-      <h2 class="section__title">About</h2>
-      <div class="prose">
-        <p>Deva is a director working across commercials, music videos and short-form narrative.
-           <em>Replace this paragraph with the real bio.</em></p>
-      </div>
-    </section>
+    <div class="row row--a">
+      <figure class="photo photo--02">
+        <picture>
+          <source type="image/webp" srcset="media/web/photos/calqueso-1000.webp 1000w, media/web/photos/calqueso-2000.webp 2000w" sizes="(min-width: 760px) 56vw, 100vw">
+          <img src="media/web/photos/calqueso-1000.jpg" srcset="media/web/photos/calqueso-1000.jpg 1000w, media/web/photos/calqueso-2000.jpg 2000w" sizes="(min-width: 760px) 56vw, 100vw" width="2000" height="1500" alt="Deva — photographie 02" loading="lazy" decoding="async">
+        </picture>
+        <figcaption>02</figcaption>
+      </figure>
+      <figure class="photo photo--03">
+        <picture>
+          <source type="image/webp" srcset="media/web/photos/paroi-1000.webp 1000w, media/web/photos/paroi-2000.webp 2000w" sizes="(min-width: 760px) 32vw, 100vw">
+          <img src="media/web/photos/paroi-1000.jpg" srcset="media/web/photos/paroi-1000.jpg 1000w, media/web/photos/paroi-2000.jpg 2000w" sizes="(min-width: 760px) 32vw, 100vw" width="2000" height="1500" alt="Deva — photographie 03" loading="lazy" decoding="async">
+        </picture>
+        <figcaption>03</figcaption>
+      </figure>
+    </div>
 
-    <!-- ───────────── Contact ───────────── -->
-    <section class="section section--split" id="contact">
-      <h2 class="section__title">Contact</h2>
-      <div class="prose">
-        <p><a href="mailto:hello@example.com">hello@example.com</a></p>
-        <p><a href="https://instagram.com/" rel="noopener">Instagram</a> · <a href="https://vimeo.com/" rel="noopener">Vimeo</a></p>
-      </div>
-    </section>
+    <div class="row row--b">
+      <figure class="photo photo--04">
+        <picture>
+          <source type="image/webp" srcset="media/web/photos/img-3814-1000.webp 1000w, media/web/photos/img-3814-2000.webp 2000w" sizes="(min-width: 760px) 64vw, 100vw">
+          <img src="media/web/photos/img-3814-1000.jpg" srcset="media/web/photos/img-3814-1000.jpg 1000w, media/web/photos/img-3814-2000.jpg 2000w" sizes="(min-width: 760px) 64vw, 100vw" width="2000" height="1500" alt="Deva — photographie 04" loading="lazy" decoding="async">
+        </picture>
+        <figcaption>04</figcaption>
+      </figure>
+    </div>
+
+    <div class="row row--c">
+      <figure class="photo photo--05">
+        <picture>
+          <source type="image/webp" srcset="media/web/photos/tipi1-1000.webp 1000w, media/web/photos/tipi1-2000.webp 1080w" sizes="(min-width: 760px) 34vw, 100vw">
+          <img src="media/web/photos/tipi1-1000.jpg" srcset="media/web/photos/tipi1-1000.jpg 1000w, media/web/photos/tipi1-2000.jpg 1080w" sizes="(min-width: 760px) 34vw, 100vw" width="1080" height="810" alt="Deva — photographie 05" loading="lazy" decoding="async">
+        </picture>
+        <figcaption>05</figcaption>
+      </figure>
+      <figure class="photo photo--06">
+        <picture>
+          <source type="image/webp" srcset="media/web/photos/arroro-1000.webp 1000w, media/web/photos/arroro-2000.webp 2000w" sizes="(min-width: 760px) 46vw, 100vw">
+          <img src="media/web/photos/arroro-1000.jpg" srcset="media/web/photos/arroro-1000.jpg 1000w, media/web/photos/arroro-2000.jpg 2000w" sizes="(min-width: 760px) 46vw, 100vw" width="2000" height="1500" alt="Deva — photographie 06" loading="lazy" decoding="async">
+        </picture>
+        <figcaption>06</figcaption>
+      </figure>
+    </div>
+
+    <div class="row row--d">
+      <figure class="photo photo--07">
+        <picture>
+          <source type="image/webp" srcset="media/web/photos/avion-1000.webp 1000w, media/web/photos/avion-2000.webp 2000w" sizes="(min-width: 760px) 72vw, 100vw">
+          <img src="media/web/photos/avion-1000.jpg" srcset="media/web/photos/avion-1000.jpg 1000w, media/web/photos/avion-2000.jpg 2000w" sizes="(min-width: 760px) 72vw, 100vw" width="2000" height="1500" alt="Deva — photographie 07" loading="lazy" decoding="async">
+        </picture>
+        <figcaption>07</figcaption>
+      </figure>
+    </div>
+
+    <div class="row row--e">
+      <figure class="photo photo--08">
+        <picture>
+          <source type="image/webp" srcset="media/web/photos/img-3825-1000.webp 1000w, media/web/photos/img-3825-2000.webp 2000w" sizes="(min-width: 760px) 44vw, 100vw">
+          <img src="media/web/photos/img-3825-1000.jpg" srcset="media/web/photos/img-3825-1000.jpg 1000w, media/web/photos/img-3825-2000.jpg 2000w" sizes="(min-width: 760px) 44vw, 100vw" width="2000" height="1500" alt="Deva — photographie 08" loading="lazy" decoding="async">
+        </picture>
+        <figcaption>08</figcaption>
+      </figure>
+      <figure class="photo photo--09">
+        <picture>
+          <source type="image/webp" srcset="media/web/photos/tipi2-1000.webp 1000w, media/web/photos/tipi2-2000.webp 1080w" sizes="(min-width: 760px) 30vw, 100vw">
+          <img src="media/web/photos/tipi2-1000.jpg" srcset="media/web/photos/tipi2-1000.jpg 1000w, media/web/photos/tipi2-2000.jpg 1080w" sizes="(min-width: 760px) 30vw, 100vw" width="1080" height="813" alt="Deva — photographie 09" loading="lazy" decoding="async">
+        </picture>
+        <figcaption>09</figcaption>
+      </figure>
+    </div>
   </main>
 
-  <footer class="site-footer">
-    <p>© <span data-year></span> Deva</p>
+  <!-- ───────────── Contact ───────────── -->
+  <footer class="footer mono" id="contact">
+    <span class="wordmark">Deva</span>
+    <div class="footer__links">
+      <a href="mailto:hello@deva.film">hello@deva.film</a>
+      <a href="#">Instagram</a>
+      <span class="muted">© <span data-year>2026</span></span>
+    </div>
   </footer>
-
-  <!-- ───────────── Full showreel player (with sound) ───────────── -->
-  <dialog class="reel" id="reel" aria-label="Showreel">
-    <button class="reel__close" type="button" data-close-reel aria-label="Close">×</button>
-    <video class="reel__video" controls playsinline preload="none" poster="media/web/video/showreel-poster.jpg">
-      <source src="media/web/video/showreel-full.mp4" type="video/mp4">
-    </video>
-  </dialog>
 </body>
 </html>
