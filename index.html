@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Deva — Director</title>
+  <meta name="description" content="Deva — film director. Showreel, selected work and contact.">
+  <meta name="theme-color" content="#0b0b0b">
+
+  <!-- Open Graph / social previews -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Deva — Director">
+  <meta property="og:description" content="Showreel, selected work and contact.">
+  <meta property="og:image" content="media/web/video/showreel-poster.jpg">
+
+  <!--
+    Fetch the poster first so the hero is never black while the loop buffers.
+  -->
+  <link rel="preload" as="image" href="media/web/video/showreel-poster.jpg" fetchpriority="high">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script src="assets/js/main.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="wordmark" href="#top">Deva</a>
+    <nav class="site-nav" aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <!-- ───────────── Hero: background showreel ───────────── -->
+    <section class="hero" aria-label="Showreel">
+      <!--
+        Autoplay requirements (all browsers): muted + playsinline + autoplay.
+        The loop file is a short, silent, web-optimised cut (see scripts/prepare-media.sh);
+        the full reel with sound opens in the player below.
+      -->
+      <video
+        class="hero__video"
+        id="hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        disablepictureinpicture
+        poster="media/web/video/showreel-poster.jpg"
+        aria-hidden="true">
+        <source src="media/web/video/showreel-loop.mp4" type="video/mp4">
+      </video>
+      <div class="hero__shade" aria-hidden="true"></div>
+
+      <div class="hero__content">
+        <p class="eyebrow">Director</p>
+        <h1 class="hero__title">Deva</h1>
+        <button class="btn" type="button" data-open-reel>
+          <span class="btn__icon" aria-hidden="true">▶</span> Watch showreel
+        </button>
+      </div>
+
+      <a class="hero__scroll" href="#work" aria-label="Scroll to work">Scroll</a>
+    </section>
+
+    <!-- ───────────── Selected work ───────────── -->
+    <section class="section" id="work">
+      <h2 class="section__title">Selected work</h2>
+      <!--
+        One <article> per project. Images come from media/web/photos/ and are
+        generated in 3 widths by scripts/prepare-media.sh.
+      -->
+      <div class="grid">
+        <article class="card">
+          <picture>
+            <source type="image/webp" srcset="media/web/photos/photo1-800.webp 800w, media/web/photos/photo1-1600.webp 1600w, media/web/photos/photo1-2400.webp 2400w" sizes="(min-width: 900px) 50vw, 100vw">
+            <img src="media/web/photos/photo1-1600.jpg" alt="Still from project one" loading="lazy" decoding="async" width="1600" height="1067">
+          </picture>
+          <div class="card__meta"><h3>Project title</h3><p>Commercial · 2026</p></div>
+        </article>
+        <article class="card">
+          <picture>
+            <source type="image/webp" srcset="media/web/photos/deva-foto-avion-sur-snobord-800.webp 800w, media/web/photos/deva-foto-avion-sur-snobord-1600.webp 1600w, media/web/photos/deva-foto-avion-sur-snobord-2400.webp 2400w" sizes="(min-width: 900px) 50vw, 100vw">
+            <img src="media/web/photos/deva-foto-avion-sur-snobord-1600.jpg" alt="Still from project two" loading="lazy" decoding="async" width="1600" height="1067">
+          </picture>
+          <div class="card__meta"><h3>Project title</h3><p>Music video · 2026</p></div>
+        </article>
+        <article class="card">
+          <picture>
+            <source type="image/webp" srcset="media/web/photos/img-3825-800.webp 800w, media/web/photos/img-3825-1600.webp 1600w, media/web/photos/img-3825-2400.webp 2400w" sizes="(min-width: 900px) 50vw, 100vw">
+            <img src="media/web/photos/img-3825-1600.jpg" alt="Still from project three" loading="lazy" decoding="async" width="1600" height="1067">
+          </picture>
+          <div class="card__meta"><h3>Project title</h3><p>Short film · 2025</p></div>
+        </article>
+        <article class="card">
+          <picture>
+            <source type="image/webp" srcset="media/web/photos/ohoto3-2-800.webp 800w, media/web/photos/ohoto3-2-1600.webp 1600w, media/web/photos/ohoto3-2-2400.webp 2400w" sizes="(min-width: 900px) 50vw, 100vw">
+            <img src="media/web/photos/ohoto3-2-1600.jpg" alt="Still from project four" loading="lazy" decoding="async" width="1600" height="1067">
+          </picture>
+          <div class="card__meta"><h3>Project title</h3><p>Documentary · 2025</p></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ───────────── About ───────────── -->
+    <section class="section section--split" id="about">
+      <h2 class="section__title">About</h2>
+      <div class="prose">
+        <p>Deva is a director working across commercials, music videos and short-form narrative.
+           <em>Replace this paragraph with the real bio.</em></p>
+      </div>
+    </section>
+
+    <!-- ───────────── Contact ───────────── -->
+    <section class="section section--split" id="contact">
+      <h2 class="section__title">Contact</h2>
+      <div class="prose">
+        <p><a href="mailto:hello@example.com">hello@example.com</a></p>
+        <p><a href="https://instagram.com/" rel="noopener">Instagram</a> · <a href="https://vimeo.com/" rel="noopener">Vimeo</a></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span data-year></span> Deva</p>
+  </footer>
+
+  <!-- ───────────── Full showreel player (with sound) ───────────── -->
+  <dialog class="reel" id="reel" aria-label="Showreel">
+    <button class="reel__close" type="button" data-close-reel aria-label="Close">×</button>
+    <video class="reel__video" controls playsinline preload="none" poster="media/web/video/showreel-poster.jpg">
+      <source src="media/web/video/showreel-full.mp4" type="video/mp4">
+    </video>
+  </dialog>
+</body>
+</html>

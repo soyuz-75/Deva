@@ -1,0 +1,7 @@
+# Raw source media is huge (the showreel alone is ~527 MB): keep it in Google Drive.
+media/source/**
+!media/source/**/
+!media/source/**/.gitkeep
+
+.DS_Store
+node_modules/

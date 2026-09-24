@@ -1,0 +1,9 @@
+{
+  "name": "deva-site",
+  "private": true,
+  "description": "Portfolio website for the director Deva",
+  "scripts": {
+    "dev": "npx --yes serve -l 3000 .",
+    "media": "bash scripts/prepare-media.sh"
+  }
+}
