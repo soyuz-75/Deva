@@ -1,58 +1,162 @@
-/* Values taken from the Claude Design mock-up "Deva Site.dc.html". */
+/*
+ * Deva, "salle noire". Evolved from the Claude Design mock-up "Deva Site.dc.html":
+ * same faces (Archivo, JetBrains Mono), the paper colour becomes the text on a
+ * screening-room black, and the accent comes from the work itself (the yellow
+ * jersey in the photographs) instead of brass.
+ */
 :root {
-  --black: #0B0B0B;
-  --paper: #F1EEE8;
-  --ink: #141414;
-  --muted: #8A867E;
-  --rule: #D9D5CD;
-  --accent: #B8862B;
-  --sans: Archivo, Helvetica, Arial, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, monospace;
-  --pad-x: clamp(16px, 4vw, 56px);
-  --gap-y: clamp(56px, 11vw, 160px);
-  --row-gap: clamp(56px, 6vw, 80px);
+  color-scheme: dark;
+
+  /* Colour: contrast ratios are against --bg */
+  --bg: #0B0B0B;
+  --text: #F1EEE8;        /* paper, 17:1 */
+  --text-2: #A29D94;      /* secondary text, 7.3:1 */
+  --line: #2B2926;        /* hairlines, decorative only */
+  --line-strong: #6F6B64; /* control and placeholder borders, 3.7:1 */
+  --accent: #E6C84A;      /* the jersey yellow: focus, sound on, placeholders. 11.9:1 */
+  --shade: 11 11 11;      /* --bg as RGB channels, for scrims */
+
+  /* Type */
+  --sans: Archivo, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --fs-display: clamp(3.5rem, 2.2rem + 5.6vw, 6rem);
+  --fs-heading: clamp(2rem, 1.5rem + 2vw, 3rem);
+  --fs-email: clamp(1.75rem, 0.8rem + 4.6vw, 5rem);
+  --fs-lead: 1.25rem;
+  --fs-body: 1.0625rem;
+  --fs-data: 0.8125rem;
+  --fs-label: 0.75rem;
+  --track-label: 0.14em;
+
+  /* Space */
+  --gutter: clamp(16px, 4vw, 56px);
+  --col-gap: clamp(12px, 1.6vw, 24px);
+  --pair-gap: 12px;
+  --group-gap: clamp(64px, 9vw, 144px);
+  --section-gap: clamp(112px, 13vw, 208px);
+  --max: 1600px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
-html, body { margin: 0; padding: 0; background: var(--black); }
+html {
+  background: var(--bg);
+  scrollbar-color: var(--line-strong) var(--bg);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
 
 body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
   font-family: var(--sans);
-  color: var(--ink);
+  font-size: var(--fs-body);
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
-a { color: inherit; text-decoration: none; }
-a:hover { color: var(--accent); }
-::selection { background: #1A1A1A; color: var(--paper); }
+h1, h2, p, dl, dd, figure { margin: 0; }
+h2 { font-size: var(--fs-heading); }
+img { max-width: 100%; }
 
-.mono {
+a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: transparent;
+  text-underline-offset: 0.3em;
+  transition: text-decoration-color 0.15s var(--ease-out);
+}
+a:hover { text-decoration-color: var(--accent); }
+
+::selection { background: var(--accent); color: var(--bg); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Small uppercase mono: nav, controls, list labels. Never below 12px. */
+.nav a,
+.btn,
+.reel__label,
+.roll dt,
+.todo__tag,
+.contact__legal {
   font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.22em;
+  font-size: var(--fs-label);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: var(--track-label);
   text-transform: uppercase;
 }
 
-.wordmark {
-  font-family: var(--sans);
-  font-size: 18px;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+/* ─── Buttons ─── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 16px;
+  border: 1px solid rgb(241 238 232 / 0.5);
+  border-radius: 0;
+  background: rgb(var(--shade) / 0.4);
+  color: var(--text);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.15s var(--ease-out),
+    border-color 0.15s var(--ease-out),
+    color 0.15s var(--ease-out),
+    transform 0.1s var(--ease-out);
 }
+.btn:hover { border-color: var(--text); background: rgb(241 238 232 / 0.12); }
+.btn:active { transform: translateY(1px); }
 
-/* ─── Hero ─── */
+.btn--primary { border-color: var(--text); background: var(--text); color: var(--bg); }
+.btn--primary:hover { border-color: #FFF; background: #FFF; }
+
+.icon { width: 16px; height: 16px; flex: none; fill: currentColor; }
+.icon__off,
+.icon__on {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.btn[data-state="off"] .icon__on,
+.btn[data-state="on"] .icon__off,
+.btn[data-state="playing"] .icon__play,
+.btn[data-state="paused"] .icon__pause { display: none; }
+
+/* Sound on is the one state worth colouring. */
+#sound-toggle[data-state="on"] { border-color: var(--accent); color: var(--accent); }
+
+/* ─── Hero: the reel, with a title card ─── */
 .hero {
   position: relative;
-  width: 100%;
   height: 100vh;
   height: 100svh;
-  min-height: 420px;
+  min-height: 540px;
   overflow: hidden;
-  color: var(--paper);
+  color: var(--text);
   /* Same frame as the poster, shown before the <video> element paints. */
-  background: #000 url("../../media/web/video/showreel-poster.jpg") center / cover no-repeat;
+  background: var(--bg) url("../../media/web/video/showreel-poster.jpg") center / cover no-repeat;
 }
 .hero__video {
   position: absolute;
@@ -62,106 +166,275 @@ a:hover { color: var(--accent); }
   object-fit: cover;
   background: transparent;
 }
-.hero__fade {
+
+/* The reel is mostly white, high-key footage: text only sits on these scrims. */
+.hero__shade {
   position: absolute;
-  inset: 0 0 auto 0;
-  height: 140px;
+  left: 0;
+  right: 0;
   pointer-events: none;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, .45), transparent);
 }
+.hero__shade--top {
+  top: 0;
+  height: 160px;
+  background: linear-gradient(to bottom, rgb(var(--shade) / 0.6), rgb(var(--shade) / 0));
+}
+.hero__shade--bottom {
+  bottom: 0;
+  height: min(60%, 460px);
+  background: linear-gradient(
+    to top,
+    rgb(var(--shade) / 0.9) 0,
+    rgb(var(--shade) / 0.74) 160px,
+    rgb(var(--shade) / 0.45) 280px,
+    rgb(var(--shade) / 0) 100%
+  );
+}
+
 .hero__header {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 20px;
-  padding: 22px 26px;
+  justify-content: flex-end;
+  padding: 10px var(--gutter) 0;
 }
-.brand {
+.nav { display: flex; gap: 20px; }
+.nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
+.hero__card {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
-  align-items: baseline;
-  gap: 14px;
   flex-wrap: wrap;
-}
-.brand .mono { opacity: .8; }
-.nav { display: flex; gap: 24px; }
-
-.hero__sound {
-  position: absolute;
-  right: 26px;
-  bottom: 24px;
-  appearance: none;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  color: var(--paper);
-}
-.hero__sound:hover { opacity: .6; }
-.hero__sound[hidden] { display: none; }
-.hero__label {
-  position: absolute;
-  left: 26px;
-  bottom: 24px;
-  pointer-events: none;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px 48px;
+  padding: 0 var(--gutter) clamp(20px, 3.2vw, 44px);
 }
 
-/* ─── Photos ─── */
-.photos {
+.title {
   display: flex;
   flex-direction: column;
-  gap: var(--gap-y);
-  padding: var(--gap-y) var(--pad-x);
-  background: var(--paper);
+  gap: 14px;
+  font-size: var(--fs-display);
+  font-weight: 400;
+  text-wrap: balance;
 }
-.photo {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+.title__name {
+  margin-left: -0.05em; /* optical: pull the D's stem onto the gutter */
+  font-stretch: 125%;
+  font-weight: 600;
+  line-height: 0.84;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
-.photo img {
+.title__role {
+  font-size: var(--fs-lead);
+  font-stretch: 100%;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+}
+
+.reel { display: flex; flex-direction: column; align-items: flex-end; gap: 12px; }
+.reel__buttons { display: flex; gap: 8px; }
+
+@media (max-width: 639px) {
+  .hero__card { flex-direction: column; align-items: stretch; gap: 24px; }
+  .reel { align-items: stretch; }
+  .reel__buttons .btn--primary { flex: 1; }
+  .btn--compact { width: 44px; padding: 0; }
+  .btn--compact .btn__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* ─── Photos: a sequence of frames ───
+ * Phones: 6 columns. Bleeds (01, 04, 07) alternate with pairs.
+ * Wide: 12 columns. Pairs share a row and are grouped by subject:
+ * tower blocks (02/03), snow diptych (05/06), night and hands (08/09).
+ */
+.sequence {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: var(--pair-gap);
+  max-width: calc(var(--max) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding: var(--group-gap) var(--gutter) 0;
+}
+.shot { min-width: 0; }
+.shot img {
   display: block;
   width: 100%;
   height: auto;
 }
-.photo figcaption {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--muted);
+/* The contact-sheet scan sits in a wide band of empty black film rebate:
+   trim that margin (never the frames) so it does not read as dead space. */
+.shot--01 img {
+  aspect-ratio: 5 / 2;
+  object-fit: cover;
+  object-position: 50% 46%;
+  /* Fade what is left of the rebate into the page; the frames sit at 17-82%. */
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 14%, #000 86%, transparent);
 }
 
-.row { display: flex; }
-.row--a { flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: var(--row-gap) 4%; }
-.row--b { justify-content: flex-end; }
-.row--c { flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: var(--row-gap) 6%; }
-.row--d { justify-content: flex-start; padding-left: clamp(0px, 8vw, 140px); }
-.row--e { flex-wrap: wrap; justify-content: space-around; align-items: flex-start; gap: var(--row-gap) 4%; }
+.shot--02,
+.shot--04,
+.shot--05,
+.shot--06,
+.shot--07,
+.shot--08 { margin-top: var(--group-gap); }
 
-.photo--02 { flex: 0 1 56%; min-width: min(100%, 420px); }
-.photo--03 { flex: 0 1 32%; min-width: min(100%, 300px); padding-top: clamp(0px, 14vw, 220px); }
-.photo--04 { flex: 0 1 64%; min-width: min(100%, 420px); }
-.photo--05 { flex: 0 1 34%; min-width: min(100%, 300px); }
-.photo--06 { flex: 0 1 46%; min-width: min(100%, 360px); }
-.photo--07 { flex: 0 1 72%; min-width: min(100%, 420px); }
-.photo--08 { flex: 0 1 44%; min-width: min(100%, 360px); }
-.photo--09 { flex: 0 1 30%; min-width: min(100%, 280px); padding-top: clamp(0px, 10vw, 160px); }
+.shot--01,
+.shot--04,
+.shot--07 { grid-column: 1 / -1; margin-inline: calc(var(--gutter) * -1); }
+.shot--02 { grid-column: 1 / -1; }
+.shot--03 { grid-column: 3 / -1; }
+.shot--05 { grid-column: 1 / span 3; }
+.shot--06 { grid-column: 4 / -1; }
+.shot--08 { grid-column: 1 / span 5; }
+.shot--09 { grid-column: 3 / -1; }
 
-/* ─── Footer ─── */
-.footer {
+@media (min-width: 760px) {
+  .sequence { grid-template-columns: repeat(12, minmax(0, 1fr)); }
+
+  .shot--04,
+  .shot--07 { margin-inline: 0; }
+
+  .shot--02 { grid-column: 1 / span 7; }
+  .shot--03 { grid-column: 9 / -1; align-self: end; }
+  .shot--04 { grid-column: 4 / -1; }
+  .shot--05 { grid-column: 1 / span 6; }
+  .shot--06 { grid-column: 7 / -1; }
+  .shot--07 { grid-column: 2 / -2; }
+  .shot--08 { grid-column: 1 / span 7; }
+  .shot--09 { grid-column: 9 / -1; align-self: start; margin-top: calc(var(--group-gap) + 12vw); }
+}
+
+/*
+ * Reveal: each frame is "exposed" as it enters, from a dim, letterboxed
+ * state that is still visible. Scroll-linked, no script; browsers without
+ * scroll timelines and visitors who prefer reduced motion get still frames.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .shot img {
+      animation: expose linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45vh;
+    }
+  }
+}
+@keyframes expose {
+  from { opacity: 0.3; clip-path: inset(7% 0); }
+  to { opacity: 1; clip-path: inset(0); }
+}
+
+/* ─── Générique ─── */
+.credits {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 24px;
-  flex-wrap: wrap;
-  padding: 40px var(--pad-x) 48px;
-  border-top: 1px solid var(--rule);
-  background: var(--paper);
-  color: var(--ink);
+  flex-direction: column;
+  align-items: center;
+  gap: 48px;
+  max-width: calc(var(--max) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding: var(--section-gap) var(--gutter) 0;
+  text-align: center;
 }
-.footer__links { display: flex; gap: 26px; flex-wrap: wrap; }
-.muted { color: var(--muted); }
+.credits__title {
+  text-wrap: balance;
+  font-stretch: 125%;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.credits__bio { width: min(100%, 34rem); }
+
+/* End-credits layout: roles right-aligned, names left-aligned, on one axis. */
+.roll { display: grid; gap: 28px; width: min(100%, 56rem); }
+.roll__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 32px;
+  align-items: baseline;
+}
+.roll dt { text-align: right; color: var(--text-2); }
+.roll dd {
+  text-align: left;
+  font-size: var(--fs-lead);
+  font-stretch: 112%;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+@media (max-width: 639px) {
+  .roll__row { grid-template-columns: 1fr; row-gap: 10px; }
+  .roll dt,
+  .roll dd { text-align: center; }
+}
+
+/* Placeholders: dashed and tagged so they cannot pass for real content. */
+.todo {
+  display: block;
+  padding: 16px 20px;
+  border: 1px dashed var(--line-strong);
+  color: var(--text-2);
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  line-height: 1.55;
+  text-align: left;
+}
+.todo p { margin-top: 8px; }
+.todo__tag { color: var(--accent); }
+.todo--inline { display: inline-block; padding: 9px 12px; }
+.todo--inline .todo__tag { margin-right: 8px; }
+.roll .todo--inline { display: block; width: fit-content; font-stretch: normal; font-weight: 400; }
+
+/* ─── Contact ─── */
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: calc(var(--max) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding: var(--section-gap) var(--gutter) clamp(28px, 4vw, 48px);
+}
+.contact__email {
+  font-size: var(--fs-email);
+  font-stretch: 112%;
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+  text-decoration-thickness: 0.03em;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.18em;
+}
+.contact__email:hover { text-decoration-color: var(--accent); }
+.contact__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
+}
+.contact__legal {
+  margin-top: clamp(40px, 7vw, 104px);
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  color: var(--text-2);
+}

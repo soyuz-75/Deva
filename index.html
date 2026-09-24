@@ -3,11 +3,12 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Deva — Réalisatrice</title>
+  <title>Deva, réalisatrice</title>
   <meta name="description" content="Deva, réalisatrice. Showreel 2026 et photographies.">
   <meta name="theme-color" content="#0B0B0B">
+  <meta name="color-scheme" content="dark">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Deva — Réalisatrice">
+  <meta property="og:title" content="Deva, réalisatrice">
   <meta property="og:description" content="Showreel 2026 et photographies.">
   <meta property="og:image" content="media/web/video/showreel-poster.jpg">
 
@@ -16,141 +17,192 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="assets/css/style.css">
   <script src="assets/js/main.js" defer></script>
 </head>
 <body>
-  <!-- ───────────── Hero: showreel ───────────── -->
-  <section class="hero" aria-label="Showreel 2026">
-    <!--
-      Autoplay needs muted + playsinline + autoplay. The files are faststart
-      H.264/AAC MP4s built by scripts/prepare-media.sh, so they start playing
-      while they download: 1080p on wide screens, 720p on phones (and as the
-      fallback if the 1080p file is missing). Sound is turned on with "Son".
-    -->
-    <video
-      class="hero__video"
-      id="hero-video"
-      autoplay
-      muted
-      loop
-      playsinline
-      preload="auto"
-      disablepictureinpicture
-      poster="media/web/video/showreel-poster.jpg">
-      <source src="media/web/video/showreel-1080.mp4" type="video/mp4" media="(min-width: 1000px)">
-      <source src="media/web/video/showreel-720.mp4" type="video/mp4">
-    </video>
+  <main>
+    <!-- ───────────── Hero: showreel ───────────── -->
+    <section class="hero" aria-label="Showreel 2026">
+      <!--
+        Autoplay needs muted + playsinline + autoplay. The files are faststart
+        H.264/AAC MP4s built by scripts/prepare-media.sh, so they start playing
+        while they download: 1080p on wide screens, 720p on phones (and as the
+        fallback if the 1080p file is missing). Sound is turned on with "Son".
+      -->
+      <video
+        class="hero__video"
+        id="hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        disablepictureinpicture
+        poster="media/web/video/showreel-poster.jpg">
+        <source src="media/web/video/showreel-1080.mp4" type="video/mp4" media="(min-width: 1000px)">
+        <source src="media/web/video/showreel-720.mp4" type="video/mp4">
+      </video>
 
-    <div class="hero__fade" aria-hidden="true"></div>
+      <!-- Scrims keep the labels readable over the reel's white, high-key frames. -->
+      <div class="hero__shade hero__shade--top" aria-hidden="true"></div>
+      <div class="hero__shade hero__shade--bottom" aria-hidden="true"></div>
 
-    <header class="hero__header">
-      <div class="brand">
-        <span class="wordmark">Deva</span>
-        <span class="mono">Réalisatrice</span>
+      <header class="hero__header">
+        <nav class="nav" aria-label="Navigation principale">
+          <a href="#photos">Photos</a>
+          <a href="#generique">Générique</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </header>
+
+      <div class="hero__card">
+        <h1 class="title">
+          <span class="title__name">Deva</span>
+          <span class="title__role">Réalisatrice</span>
+        </h1>
+
+        <div class="reel" id="reel-controls" role="group" aria-labelledby="reel-label">
+          <span class="reel__label" id="reel-label">Showreel 2026</span>
+          <div class="reel__buttons">
+            <button class="btn btn--primary" id="watch-reel" type="button">
+              <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.8v10.4L13 8z"/></svg>
+              <span class="btn__label">Regarder le showreel</span>
+            </button>
+            <button class="btn btn--compact" id="sound-toggle" type="button" data-state="off">
+              <svg class="icon icon--sound" viewBox="0 0 16 16" aria-hidden="true">
+                <path class="icon__body" d="M2 6h2.5L8 3v10L4.5 10H2z"/>
+                <path class="icon__off" d="M10.5 6l4 4m0-4l-4 4"/>
+                <path class="icon__on" d="M10.5 5.5a3.5 3.5 0 0 1 0 5M12.5 3.5a6.3 6.3 0 0 1 0 9"/>
+              </svg>
+              <span class="btn__label">Activer le son</span>
+            </button>
+            <button class="btn btn--compact" id="pause-toggle" type="button" data-state="playing">
+              <svg class="icon icon--pause" viewBox="0 0 16 16" aria-hidden="true">
+                <path class="icon__pause" d="M4 3h2.6v10H4zm5.4 0H12v10H9.4z"/>
+                <path class="icon__play" d="M4.5 2.8v10.4L13 8z"/>
+              </svg>
+              <span class="btn__label">Pause</span>
+            </button>
+          </div>
+        </div>
       </div>
-      <nav class="mono nav" aria-label="Navigation">
-        <a href="#photos">Photos</a>
-        <a href="#contact">Contact</a>
-      </nav>
-    </header>
+    </section>
 
-    <button class="mono hero__sound" id="sound-toggle" type="button" aria-pressed="false">Son — off</button>
-    <span class="mono hero__label">Showreel 2026</span>
-  </section>
+    <!-- ───────────── Photos ───────────── -->
+    <section class="sequence" id="photos" aria-labelledby="photos-title">
+      <h2 class="visually-hidden" id="photos-title">Photographies</h2>
 
-  <!-- ───────────── Photos ───────────── -->
-  <main class="photos" id="photos">
-    <figure class="photo">
+      <figure class="shot shot--01">
         <picture>
           <source type="image/webp" srcset="media/web/photos/photo1-1000.webp 1000w, media/web/photos/photo1-2000.webp 2000w" sizes="100vw">
-          <img src="media/web/photos/photo1-1000.jpg" srcset="media/web/photos/photo1-1000.jpg 1000w, media/web/photos/photo1-2000.jpg 2000w" sizes="100vw" width="2000" height="1239" alt="Deva — photographie 01" loading="lazy" decoding="async">
+          <img src="media/web/photos/photo1-1000.jpg" srcset="media/web/photos/photo1-1000.jpg 1000w, media/web/photos/photo1-2000.jpg 2000w" sizes="100vw" width="2000" height="1239" alt="Triptyque en planche contact : une personne cagoulée, casquette noire, lunettes rouges et maillot jaune du Brésil, de profil, de face puis de l’autre profil devant un rideau métallique." loading="lazy" decoding="async">
         </picture>
-        <figcaption>01</figcaption>
       </figure>
 
-    <div class="row row--a">
-      <figure class="photo photo--02">
+      <figure class="shot shot--02">
         <picture>
           <source type="image/webp" srcset="media/web/photos/calqueso-1000.webp 1000w, media/web/photos/calqueso-2000.webp 2000w" sizes="(min-width: 760px) 56vw, 100vw">
-          <img src="media/web/photos/calqueso-1000.jpg" srcset="media/web/photos/calqueso-1000.jpg 1000w, media/web/photos/calqueso-2000.jpg 2000w" sizes="(min-width: 760px) 56vw, 100vw" width="2000" height="1500" alt="Deva — photographie 02" loading="lazy" decoding="async">
+          <img src="media/web/photos/calqueso-1000.jpg" srcset="media/web/photos/calqueso-1000.jpg 1000w, media/web/photos/calqueso-2000.jpg 2000w" sizes="(min-width: 760px) 56vw, 100vw" width="2000" height="1500" alt="Noir et blanc, en contre-plongée : une silhouette capuche sur la tête, maillot du Brésil, devant une tour d’habitation." loading="lazy" decoding="async">
         </picture>
-        <figcaption>02</figcaption>
       </figure>
-      <figure class="photo photo--03">
+      <figure class="shot shot--03">
         <picture>
-          <source type="image/webp" srcset="media/web/photos/paroi-1000.webp 1000w, media/web/photos/paroi-2000.webp 2000w" sizes="(min-width: 760px) 32vw, 100vw">
-          <img src="media/web/photos/paroi-1000.jpg" srcset="media/web/photos/paroi-1000.jpg 1000w, media/web/photos/paroi-2000.jpg 2000w" sizes="(min-width: 760px) 32vw, 100vw" width="2000" height="1500" alt="Deva — photographie 03" loading="lazy" decoding="async">
+          <source type="image/webp" srcset="media/web/photos/paroi-1000.webp 1000w, media/web/photos/paroi-2000.webp 2000w" sizes="(min-width: 760px) 32vw, 64vw">
+          <img src="media/web/photos/paroi-1000.jpg" srcset="media/web/photos/paroi-1000.jpg 1000w, media/web/photos/paroi-2000.jpg 2000w" sizes="(min-width: 760px) 32vw, 64vw" width="2000" height="1500" alt="Une personne cagoulée en maillot jaune saute dans un ciel d’orage, au-dessus de deux tours." loading="lazy" decoding="async">
         </picture>
-        <figcaption>03</figcaption>
       </figure>
-    </div>
 
-    <div class="row row--b">
-      <figure class="photo photo--04">
+      <figure class="shot shot--04">
         <picture>
-          <source type="image/webp" srcset="media/web/photos/img-3814-1000.webp 1000w, media/web/photos/img-3814-2000.webp 2000w" sizes="(min-width: 760px) 64vw, 100vw">
-          <img src="media/web/photos/img-3814-1000.jpg" srcset="media/web/photos/img-3814-1000.jpg 1000w, media/web/photos/img-3814-2000.jpg 2000w" sizes="(min-width: 760px) 64vw, 100vw" width="2000" height="1500" alt="Deva — photographie 04" loading="lazy" decoding="async">
+          <source type="image/webp" srcset="media/web/photos/img-3814-1000.webp 1000w, media/web/photos/img-3814-2000.webp 2000w" sizes="(min-width: 760px) 74vw, 100vw">
+          <img src="media/web/photos/img-3814-1000.jpg" srcset="media/web/photos/img-3814-1000.jpg 1000w, media/web/photos/img-3814-2000.jpg 2000w" sizes="(min-width: 760px) 74vw, 100vw" width="2000" height="1500" alt="Noir et blanc : un skieur en plein saut contre un ciel chargé, entre deux photographes en silhouette sur la crête." loading="lazy" decoding="async">
         </picture>
-        <figcaption>04</figcaption>
       </figure>
-    </div>
 
-    <div class="row row--c">
-      <figure class="photo photo--05">
+      <figure class="shot shot--05">
         <picture>
-          <source type="image/webp" srcset="media/web/photos/tipi1-1000.webp 1000w, media/web/photos/tipi1-2000.webp 1080w" sizes="(min-width: 760px) 34vw, 100vw">
-          <img src="media/web/photos/tipi1-1000.jpg" srcset="media/web/photos/tipi1-1000.jpg 1000w, media/web/photos/tipi1-2000.jpg 1080w" sizes="(min-width: 760px) 34vw, 100vw" width="1080" height="810" alt="Deva — photographie 05" loading="lazy" decoding="async">
+          <source type="image/webp" srcset="media/web/photos/tipi1-1000.webp 1000w, media/web/photos/tipi1-2000.webp 1080w" sizes="(min-width: 760px) 48vw, 50vw">
+          <img src="media/web/photos/tipi1-1000.jpg" srcset="media/web/photos/tipi1-1000.jpg 1000w, media/web/photos/tipi1-2000.jpg 1080w" sizes="(min-width: 760px) 48vw, 50vw" width="1080" height="810" alt="Noir et blanc : un snowboardeur la tête en bas au-dessus d’une bosse, filmé par des cadreurs au bord de la piste." loading="lazy" decoding="async">
         </picture>
-        <figcaption>05</figcaption>
       </figure>
-      <figure class="photo photo--06">
+      <figure class="shot shot--06">
         <picture>
-          <source type="image/webp" srcset="media/web/photos/arroro-1000.webp 1000w, media/web/photos/arroro-2000.webp 2000w" sizes="(min-width: 760px) 46vw, 100vw">
-          <img src="media/web/photos/arroro-1000.jpg" srcset="media/web/photos/arroro-1000.jpg 1000w, media/web/photos/arroro-2000.jpg 2000w" sizes="(min-width: 760px) 46vw, 100vw" width="2000" height="1500" alt="Deva — photographie 06" loading="lazy" decoding="async">
+          <source type="image/webp" srcset="media/web/photos/arroro-1000.webp 1000w, media/web/photos/arroro-2000.webp 2000w" sizes="(min-width: 760px) 48vw, 50vw">
+          <img src="media/web/photos/arroro-1000.jpg" srcset="media/web/photos/arroro-1000.jpg 1000w, media/web/photos/arroro-2000.jpg 2000w" sizes="(min-width: 760px) 48vw, 50vw" width="2000" height="1500" alt="Noir et blanc : un snowboardeur à l’envers devant un sommet rocheux enneigé." loading="lazy" decoding="async">
         </picture>
-        <figcaption>06</figcaption>
       </figure>
-    </div>
 
-    <div class="row row--d">
-      <figure class="photo photo--07">
+      <figure class="shot shot--07">
         <picture>
-          <source type="image/webp" srcset="media/web/photos/avion-1000.webp 1000w, media/web/photos/avion-2000.webp 2000w" sizes="(min-width: 760px) 72vw, 100vw">
-          <img src="media/web/photos/avion-1000.jpg" srcset="media/web/photos/avion-1000.jpg 1000w, media/web/photos/avion-2000.jpg 2000w" sizes="(min-width: 760px) 72vw, 100vw" width="2000" height="1500" alt="Deva — photographie 07" loading="lazy" decoding="async">
+          <source type="image/webp" srcset="media/web/photos/avion-1000.webp 1000w, media/web/photos/avion-2000.webp 2000w" sizes="(min-width: 760px) 82vw, 100vw">
+          <img src="media/web/photos/avion-1000.jpg" srcset="media/web/photos/avion-1000.jpg 1000w, media/web/photos/avion-2000.jpg 2000w" sizes="(min-width: 760px) 82vw, 100vw" width="2000" height="1500" alt="Un snowboardeur en plein saut dans la lumière du soir, une gerbe de neige derrière lui." loading="lazy" decoding="async">
         </picture>
-        <figcaption>07</figcaption>
       </figure>
-    </div>
 
-    <div class="row row--e">
-      <figure class="photo photo--08">
+      <figure class="shot shot--08">
         <picture>
-          <source type="image/webp" srcset="media/web/photos/img-3825-1000.webp 1000w, media/web/photos/img-3825-2000.webp 2000w" sizes="(min-width: 760px) 44vw, 100vw">
-          <img src="media/web/photos/img-3825-1000.jpg" srcset="media/web/photos/img-3825-1000.jpg 1000w, media/web/photos/img-3825-2000.jpg 2000w" sizes="(min-width: 760px) 44vw, 100vw" width="2000" height="1500" alt="Deva — photographie 08" loading="lazy" decoding="async">
+          <source type="image/webp" srcset="media/web/photos/img-3825-1000.webp 1000w, media/web/photos/img-3825-2000.webp 2000w" sizes="(min-width: 760px) 56vw, 82vw">
+          <img src="media/web/photos/img-3825-1000.jpg" srcset="media/web/photos/img-3825-1000.jpg 1000w, media/web/photos/img-3825-2000.jpg 2000w" sizes="(min-width: 760px) 56vw, 82vw" width="2000" height="1500" alt="Noir et blanc, à contre-jour : un skieur en rotation au-dessus de la piste, un photographe en silhouette au premier plan et un télésiège au loin." loading="lazy" decoding="async">
         </picture>
-        <figcaption>08</figcaption>
       </figure>
-      <figure class="photo photo--09">
+      <figure class="shot shot--09">
         <picture>
-          <source type="image/webp" srcset="media/web/photos/tipi2-1000.webp 1000w, media/web/photos/tipi2-2000.webp 1080w" sizes="(min-width: 760px) 30vw, 100vw">
-          <img src="media/web/photos/tipi2-1000.jpg" srcset="media/web/photos/tipi2-1000.jpg 1000w, media/web/photos/tipi2-2000.jpg 1080w" sizes="(min-width: 760px) 30vw, 100vw" width="1080" height="813" alt="Deva — photographie 09" loading="lazy" decoding="async">
+          <source type="image/webp" srcset="media/web/photos/tipi2-1000.webp 1000w, media/web/photos/tipi2-2000.webp 1080w" sizes="(min-width: 760px) 32vw, 64vw">
+          <img src="media/web/photos/tipi2-1000.jpg" srcset="media/web/photos/tipi2-1000.jpg 1000w, media/web/photos/tipi2-2000.jpg 1080w" sizes="(min-width: 760px) 32vw, 64vw" width="1080" height="813" alt="Noir et blanc : deux avant-bras tatoués qui se croisent, une gourmette en argent au poignet, sur fond noir." loading="lazy" decoding="async">
         </picture>
-        <figcaption>09</figcaption>
       </figure>
-    </div>
+    </section>
+
+    <!-- ───────────── Générique (credits) ─────────────
+         Everything marked "À compléter" is a placeholder waiting for real
+         content from Deva: replace the .todo element, keep the row. -->
+    <section class="credits" id="generique" aria-labelledby="generique-title">
+      <h2 class="credits__title" id="generique-title">Générique</h2>
+
+      <div class="todo credits__bio">
+        <span class="todo__tag">À compléter</span>
+        <p>Bio courte, 2 à 3 phrases : ce que Deva réalise, pour qui, et d’où elle vient.</p>
+      </div>
+
+      <dl class="roll">
+        <div class="roll__row">
+          <dt>Réalisation</dt>
+          <dd>Deva</dd>
+        </div>
+        <div class="roll__row">
+          <dt>Sélection</dt>
+          <dd><span class="todo todo--inline"><span class="todo__tag">À compléter</span> 4 à 8 films : titre, format, client ou production, année</span></dd>
+        </div>
+        <div class="roll__row">
+          <dt>Clients</dt>
+          <dd><span class="todo todo--inline"><span class="todo__tag">À compléter</span> marques et agences que l’on peut citer</span></dd>
+        </div>
+        <div class="roll__row">
+          <dt>Représentation</dt>
+          <dd><span class="todo todo--inline"><span class="todo__tag">À compléter</span> agent ou société de production, avec un contact</span></dd>
+        </div>
+      </dl>
+    </section>
   </main>
 
   <!-- ───────────── Contact ───────────── -->
-  <footer class="footer mono" id="contact">
-    <span class="wordmark">Deva</span>
-    <div class="footer__links">
-      <a href="mailto:hello@deva.film">hello@deva.film</a>
-      <a href="#">Instagram</a>
-      <span class="muted">© <span data-year>2026</span></span>
+  <footer class="contact" id="contact" aria-labelledby="contact-title">
+    <h2 class="visually-hidden" id="contact-title">Contact</h2>
+    <p class="contact__line">
+      <a class="contact__email" id="contact-email" href="mailto:hello@deva.film">hello@deva.film</a>
+    </p>
+    <div class="contact__actions">
+      <button class="btn" id="copy-email" type="button" hidden>
+        <span class="btn__label">Copier l’adresse</span>
+      </button>
+      <span class="visually-hidden" id="copy-status" aria-live="polite"></span>
+      <!-- Placeholder: no Instagram URL yet. Swap for <a href="https://instagram.com/…">Instagram</a>. -->
+      <span class="todo todo--inline"><span class="todo__tag">À compléter</span> Instagram, lien à fournir</span>
     </div>
+    <p class="contact__legal">© <span data-year>2026</span> Deva</p>
   </footer>
 </body>
 </html>
