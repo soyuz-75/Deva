@@ -7,7 +7,7 @@
  * Power Mode) playback starts on the first tap, key press or scroll.
  * The "Son" button then turns sound on — a user click, so browsers allow it.
  */
-(function showreel() {
+function showreel() {
   const video = document.getElementById("hero-video");
   const soundBtn = document.getElementById("sound-toggle");
   if (!video) return;
@@ -57,17 +57,16 @@
   }
   document.addEventListener("visibilitychange", sync);
 
-  // If no file can be played at all, the poster (CSS background) stays up and
-  // the sound button goes. A single <source> failing is not enough: the
-  // browser then falls back to the next one (e.g. 1080p missing → 720p).
+  // The sound button is visible from the start (no JS needed to show it) and
+  // only goes if no file can be played at all; the poster then stays up.
+  // A single <source> failing is not enough: the browser falls back to the
+  // next one (e.g. 1080p missing → 720p), so only the last one counts.
   const hideSound = () => { if (soundBtn) soundBtn.hidden = true; };
   video.addEventListener("error", hideSound);
   const lastSource = video.querySelector("source:last-of-type");
   if (lastSource) lastSource.addEventListener("error", hideSound);
 
   if (soundBtn) {
-    // Sources may already have all failed before this deferred script ran.
-    soundBtn.hidden = video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE;
     soundBtn.addEventListener("click", () => {
       const on = video.muted; // toggling → sound on if it was muted
       video.muted = !on;
@@ -79,8 +78,16 @@
       }
     });
   }
-})();
+}
 
-document.querySelectorAll("[data-year]").forEach((el) => {
-  el.textContent = new Date().getFullYear();
-});
+function init() {
+  showreel();
+  document.querySelectorAll("[data-year]").forEach((el) => {
+    el.textContent = new Date().getFullYear();
+  });
+}
+
+// Run once the page is fully parsed, however this script got loaded
+// (deferred, async, or injected by a host that wraps the page).
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+else init();
