@@ -65,5 +65,5 @@ Tested in headless Chromium: the reel is playing about 350 ms after navigation, 
 
 ## To do before launch
 
-- [ ] Confirm the email address (currently the placeholder `hello@deva.film` in `index.html` and `works.html`)
+- [x] Email address set to rokdev3@gmail.com
 - [ ] Favicon and custom domain
