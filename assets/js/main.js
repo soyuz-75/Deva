@@ -5,7 +5,7 @@
  * not always honoured on its own, so the `muted` property is set again here,
  * play() is called explicitly, and if the browser still refuses (e.g. iOS Low
  * Power Mode) playback starts on the first tap, key press or scroll.
- * The "Son" button then turns sound on — a user click, so browsers allow it.
+ * The "Sound" button then turns sound on — a user click, so browsers allow it.
  */
 function showreel() {
   const video = document.getElementById("hero-video");
@@ -70,7 +70,7 @@ function showreel() {
     soundBtn.addEventListener("click", () => {
       const on = video.muted; // toggling → sound on if it was muted
       video.muted = !on;
-      soundBtn.textContent = on ? "Son — on" : "Son — off";
+      soundBtn.textContent = on ? "Sound — on" : "Sound — off";
       soundBtn.setAttribute("aria-pressed", String(on));
       if (on) {
         wanted = true;
@@ -80,11 +80,35 @@ function showreel() {
   }
 }
 
+/*
+ * Selected works: each card shows the YouTube thumbnail and only loads the
+ * player when clicked, so eight embeds don't slow the page down.
+ * Playing one stops any other that is already playing.
+ */
+function works() {
+  const buttons = document.querySelectorAll(".work__play[data-video]");
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".work iframe").forEach((f) => {
+        const b = f.closest(".work");
+        f.replaceWith(b._btn);
+      });
+      const iframe = document.createElement("iframe");
+      iframe.src = "https://www.youtube-nocookie.com/embed/" + btn.dataset.video + "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
+      iframe.title = btn.getAttribute("aria-label") || "Video";
+      iframe.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
+      iframe.allowFullscreen = true;
+      const li = btn.closest(".work");
+      li._btn = btn;
+      btn.replaceWith(iframe);
+      iframe.focus();
+    });
+  });
+}
+
 function init() {
   showreel();
-  document.querySelectorAll("[data-year]").forEach((el) => {
-    el.textContent = new Date().getFullYear();
-  });
+  works();
 }
 
 // Run once the page is fully parsed, however this script got loaded
