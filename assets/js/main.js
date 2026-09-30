@@ -70,8 +70,30 @@ function showreel() {
     video.preload = "metadata";
   }
 
-  // If a file can't be played (missing, unsupported), try the next size down.
+  // Safari refuses video from servers that don't answer HTTP Range requests, and
+  // some hosts don't. As a last resort, download the small file ourselves and
+  // play it from memory (works everywhere, no Range needed).
+  let blobTried = false;
+  const blobFallback = () => {
+    if (blobTried || !window.fetch || !window.URL || !URL.createObjectURL) return false;
+    blobTried = true;
+    const q = video.getAttribute("data-src-480") ? "480" : "720";
+    fetch(video.getAttribute("data-src-" + q))
+      .then((r) => { if (!r.ok) throw new Error(r.status); return r.blob(); })
+      .then((b) => {
+        const type = b.type && b.type.indexOf("video/") === 0 ? b.type : "video/mp4";
+        video.src = URL.createObjectURL(new Blob([b], { type }));
+        video.load();
+        sync();
+      })
+      .catch(fail);
+    return true;
+  };
+
+  // If a file can't be played (missing, unsupported), try the blob route once,
+  // then the next size down.
   const fail = () => {
+    if (blobFallback()) return;
     if (queue.length) {
       swapTo(queue.shift());
       sync();
@@ -116,6 +138,14 @@ function showreel() {
 
   document.addEventListener("visibilitychange", sync);
   if (autoplay) sync();
+
+  // Watchdog: if nothing has started after a few seconds on a normal connection
+  // (Safari without Range support tends to hang instead of erroring), use the blob route.
+  if (autoplay && !slow) {
+    setTimeout(() => {
+      if (!userPaused && onScreen && !document.hidden && video.readyState < 3 && video.currentTime === 0) blobFallback();
+    }, 7000);
+  }
   return {
     setOnScreen(v) {
       onScreen = v;
