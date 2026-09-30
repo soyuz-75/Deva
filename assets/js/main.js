@@ -48,8 +48,25 @@ function showreel() {
     const p = video.play();
     return p && typeof p.catch === "function" ? p : Promise.resolve();
   };
+  // Autoplay blocked: Safari and every iPhone browser (all WebKit) will still loop an
+  // MP4 silently when it is shown as an <img>. Other browsers fail to decode it and
+  // the picture is removed, so this only ever adds motion.
+  let still = null;
+  const dropStill = () => { if (still) { still.remove(); still = null; } };
+  const showStill = () => {
+    if (still || !video.getAttribute("data-src-480")) return;
+    still = document.createElement("img");
+    still.className = "hero__still";
+    still.alt = "";
+    still.setAttribute("aria-hidden", "true");
+    still.addEventListener("error", dropStill);
+    still.src = video.getAttribute("data-src-480");
+    video.insertAdjacentElement("afterend", still);
+  };
+  video.addEventListener("playing", dropStill);
   const gestures = ["pointerdown", "touchend", "keydown", "click"];
   const resumeOnGesture = () => {
+    showStill();
     const resume = () => {
       gestures.forEach((e) => window.removeEventListener(e, resume, true));
       if (!userPaused) sync();
