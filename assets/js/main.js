@@ -6,8 +6,9 @@
  *   another size fits better (the <source media> attribute is not honoured by
  *   every browser, so we choose in JS). If a file fails, we step down a size.
  * - Autoplay is only allowed when muted, so the video is muted and `playsinline`
- *   (iOS). When a browser still refuses (iOS Low Power Mode, reduced motion,
- *   data saver, in-app browsers), the Play button is shown and a tap starts it.
+ *   (iOS). When a browser still refuses (iOS Low Power Mode, "never auto-play"
+ *   settings, some in-app browsers), the Play button is shown and a tap anywhere
+ *   starts it.
  * - The Pause/Play button is always available, and the reel pauses off-screen
  *   and in background tabs. Sound is turned on with the Sound button.
  */
@@ -18,10 +19,11 @@ function showreel() {
   const playBtn = document.getElementById("play-toggle");
 
   const conn = navigator.connection || {};
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const saveData = !!conn.saveData;
   const slow = /(^|-)(2g|3g)$/.test(conn.effectiveType || "");
-  const autoplay = !reduceMotion && !saveData;
+  // Always try to play: the reel is muted and silent, and it has a Pause button.
+  // Data saver / slow connections only get the lighter 480p file.
+  const autoplay = true;
 
   video.muted = true;
   video.defaultMuted = true;

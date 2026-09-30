@@ -24,7 +24,7 @@ In `works.html`, each video is one `<li class="work">` whose button has `data-vi
 
 ## If the showreel doesn't play
 
-`assets/js/main.js` picks the file size itself (1080p, 720p, or 480p on data saver / 2G-3G), steps down a size if a file can't be played, and shows a **Play** button whenever the browser refuses to autoplay (iOS Low Power Mode, reduced motion, data saver, in-app browsers). The same button pauses the reel.
+`assets/js/main.js` picks the file size itself (1080p, 720p, or 480p on data saver / 2G-3G), steps down a size if a file can't be played, and shows a **Play** button whenever the browser refuses to autoplay (iOS Low Power Mode, "never auto-play" settings, some in-app browsers). The same button pauses the reel.
 
 ## Preview locally
 
@@ -64,7 +64,7 @@ Then commit `media/web/video/` with git or GitHub Desktop (limit 100 MB per file
 2. **The file's index was at the end.** Straight from the editor, `SHOWREELV1.v2.mov` had its `moov` atom after 16 MB of video data, so the browser had to download almost all of it before showing frame one. The script re-encodes it with `-movflags +faststart`, which puts the index first, and outputs H.264 + AAC (1080p for desktop, 720p for phones).
 3. **Autoplay rules.** Browsers only autoplay video that is `muted` and, on iOS, `playsinline`. The markup has `autoplay muted loop playsinline`, and `main.js` also sets the `muted` property, calls `play()`, and retries on the first tap or scroll when the browser still refuses (for example iOS Low Power Mode). Sound only turns on from the **Sound** button, because browsers only allow sound after a user click.
 4. **No black flash.** A poster frame is preloaded and sits behind the video until it paints.
-5. **Being polite.** The reel pauses when it's scrolled off-screen or the tab is hidden. With *Reduce motion* or data-saver turned on, it doesn't autoplay; the poster shows instead.
+5. **Being polite.** The reel pauses when it's scrolled off-screen or the tab is hidden, and there is always a Pause button. Data saver and slow connections get the 480p file. It still autoplays with *Reduce motion* on, since it's muted and pausable.
 
 Tested in headless Chromium: the reel is playing about 350 ms after navigation, sound toggles, it pauses off-screen, and there's no horizontal scroll at 390 px.
 
