@@ -34,8 +34,10 @@
       playsinline
       preload="auto"
       disablepictureinpicture
-      poster="media/web/video/showreel-poster.jpg">
-      <source src="media/web/video/showreel-1080.mp4" type="video/mp4" media="(min-width: 1000px)">
+      poster="media/web/video/showreel-poster.jpg"
+      data-src-1080="media/web/video/showreel-1080.mp4"
+      data-src-720="media/web/video/showreel-720.mp4"
+      data-src-480="media/web/video/showreel-480.mp4">
       <source src="media/web/video/showreel-720.mp4" type="video/mp4">
     </video>
     <div class="hero__shade" aria-hidden="true"></div>
@@ -50,7 +52,10 @@
         <a href="https://www.instagram.com/hwdev/" target="_blank" rel="noopener">@hwdev</a>
         <a href="mailto:rokdev3@gmail.com">rokdev3@gmail.com</a>
       </div>
-      <button class="hero__sound mono" id="sound-toggle" type="button" aria-pressed="false">Sound — off</button>
+      <div class="hero__controls">
+        <button class="hero__btn mono" id="play-toggle" type="button" aria-pressed="false">Pause</button>
+        <button class="hero__btn mono" id="sound-toggle" type="button" aria-pressed="false">Sound — off</button>
+      </div>
     </footer>
   </section>
 </body>

@@ -5,6 +5,7 @@
 #   media/source/video/<showreel>.mov|.mp4   ->  media/web/video/
 #       showreel-1080.mp4    H.264 + AAC, 1080p, "faststart" (plays while downloading) — desktop
 #       showreel-720.mp4     same at 720p, lighter — phones / small screens
+#       showreel-480.mp4     480p, ~3 MB — data saver / slow connections
 #       showreel-poster.jpg  still shown instantly while the video buffers
 #
 #   Sources are converted to H.264 even when already MP4/MOV: exports in HEVC
@@ -29,6 +30,7 @@
 #   VIDEO_SRC=path      source video (default: newest file in media/source/video)
 #   CRF_1080=24         1080p quality (higher = smaller file; 24 ≈ 27 MB for the 53 s reel)
 #   CRF_720=24          720p quality (24 ≈ 14 MB for the 53 s reel)
+#   CRF_480=27          480p quality (27 ≈ 3 MB for the 53 s reel)
 #   POSTER_AT=1         timestamp (s) used for the poster frame
 
 set -euo pipefail
@@ -41,6 +43,7 @@ OUT_PHOTO_DIR="$ROOT/media/web/photos"
 
 CRF_1080="${CRF_1080:-24}"
 CRF_720="${CRF_720:-24}"
+CRF_480="${CRF_480:-27}"
 POSTER_AT="${POSTER_AT:-1}"
 PHOTO_WIDTHS=(1000 2000)
 
@@ -69,7 +72,7 @@ prepare_video() {
   echo "▸ Source video: $src"
 
   local height crf
-  for height in 1080 720; do
+  for height in 1080 720 480; do
     crf="CRF_$height"; crf="${!crf}"
     echo "▸ showreel-$height.mp4 (H.264/AAC, ≤${height}p, crf $crf, faststart)"
     ff -i "$src" \

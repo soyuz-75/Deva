@@ -22,6 +22,10 @@ netlify.toml             hosting config (long cache on media)
 
 In `works.html`, each video is one `<li class="work">` whose button has `data-video="<YouTube id>"` (the part after `youtu.be/`). Copy a `<li>`, change the id in `data-video` and in the thumbnail `src`, and renumber.
 
+## If the showreel doesn't play
+
+`assets/js/main.js` picks the file size itself (1080p, 720p, or 480p on data saver / 2G-3G), steps down a size if a file can't be played, and shows a **Play** button whenever the browser refuses to autoplay (iOS Low Power Mode, reduced motion, data saver, in-app browsers). The same button pauses the reel.
+
 ## Preview locally
 
 ```sh
@@ -44,6 +48,7 @@ Source video exports stay in Google Drive (`Deva/Videos`). They're git-ignored b
 | --- | --- | --- |
 | `media/web/video/showreel-1080.mp4` | screens ≥ 1000 px wide | ~27 MB |
 | `media/web/video/showreel-720.mp4` | phones, small screens, and fallback | ~14 MB |
+| `media/web/video/showreel-480.mp4` | data saver and slow connections | ~3 MB |
 
 They're currently built from `SHOWREELV1.mov` (1080p, HEVC). HEVC doesn't play in Chrome or Firefox, which is another reason the script always converts to H.264. To update the reel, download the new export from Drive and run:
 

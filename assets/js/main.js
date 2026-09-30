@@ -1,70 +1,105 @@
 /*
- * Hero showreel: start as soon as possible, silently, everywhere.
+ * Hero showreel: start as soon as possible, silently, on every browser.
  *
- * Browsers only allow autoplay when the video is muted. The HTML attribute is
- * not always honoured on its own, so the `muted` property is set again here,
- * play() is called explicitly, and if the browser still refuses (e.g. iOS Low
- * Power Mode) playback starts on the first tap, key press or scroll.
- * The "Sound" button then turns sound on — a user click, so browsers allow it.
+ * - Quality: 1080p on wide screens, 720p on phones, 480p on data saver or a slow
+ *   connection. The <video> starts on the 720p <source>; we only swap it when
+ *   another size fits better (the <source media> attribute is not honoured by
+ *   every browser, so we choose in JS). If a file fails, we step down a size.
+ * - Autoplay is only allowed when muted, so the video is muted and `playsinline`
+ *   (iOS). When a browser still refuses (iOS Low Power Mode, reduced motion,
+ *   data saver, in-app browsers), the Play button is shown and a tap starts it.
+ * - The Pause/Play button is always available, and the reel pauses off-screen
+ *   and in background tabs. Sound is turned on with the Sound button.
  */
 function showreel() {
   const video = document.getElementById("hero-video");
+  if (!video) return { setOnScreen() {} };
   const soundBtn = document.getElementById("sound-toggle");
-  if (!video) return;
+  const playBtn = document.getElementById("play-toggle");
 
+  const conn = navigator.connection || {};
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const saveData = !!(navigator.connection && navigator.connection.saveData);
+  const saveData = !!conn.saveData;
+  const slow = /(^|-)(2g|3g)$/.test(conn.effectiveType || "");
   const autoplay = !reduceMotion && !saveData;
 
   video.muted = true;
   video.defaultMuted = true;
   video.playsInline = true;
+  video.setAttribute("playsinline", "");
   video.setAttribute("webkit-playsinline", "");
+  video.setAttribute("x5-playsinline", "");
 
-  if (!autoplay) {
-    video.removeAttribute("autoplay");
-    video.preload = "metadata";
-  }
+  // Pick a size, then a list of smaller ones to fall back to.
+  const ladder = ["1080", "720", "480"].filter((q) => video.getAttribute("data-src-" + q));
+  let first = saveData || slow ? "480" : window.innerWidth >= 1000 ? "1080" : "720";
+  if (!ladder.includes(first)) first = ladder.includes("720") ? "720" : ladder[0];
+  const queue = ladder.slice(ladder.indexOf(first));
+  const swapTo = (q) => {
+    video.src = video.getAttribute("data-src-" + q);
+    video.load();
+  };
+  let userPaused = !autoplay;
+  let onScreen = true;
 
   const play = () => {
     const p = video.play();
     return p && typeof p.catch === "function" ? p : Promise.resolve();
   };
-
-  const gestures = ["pointerdown", "touchstart", "keydown", "scroll"];
+  const gestures = ["pointerdown", "touchend", "keydown", "click"];
   const resumeOnGesture = () => {
     const resume = () => {
-      gestures.forEach((e) => window.removeEventListener(e, resume));
-      play().catch(() => {});
+      gestures.forEach((e) => window.removeEventListener(e, resume, true));
+      if (!userPaused) sync();
     };
-    gestures.forEach((e) => window.addEventListener(e, resume, { passive: true }));
+    gestures.forEach((e) => window.addEventListener(e, resume, true));
   };
-
-  let wanted = autoplay; // should the reel be playing when visible?
-  if (autoplay) play().catch(resumeOnGesture);
-
-  // Pause off-screen and in background tabs; resume when back.
-  let onScreen = true;
   const sync = () => {
-    if (wanted && onScreen && !document.hidden) play().catch(() => {});
+    if (!userPaused && onScreen && !document.hidden) play().catch(resumeOnGesture);
     else video.pause();
   };
-  if ("IntersectionObserver" in window) {
-    new IntersectionObserver(([entry]) => {
-      onScreen = entry.isIntersecting;
-      sync();
-    }).observe(video);
-  }
-  document.addEventListener("visibilitychange", sync);
 
-  // The sound button is visible from the start (no JS needed to show it) and
-  // only goes if no file can be played at all; the poster then stays up.
-  // A single <source> failing is not enough: the browser falls back to the
-  // next one (e.g. 1080p missing → 720p), so only the last one counts.
-  const hideSound = () => { if (soundBtn) soundBtn.hidden = true; };
-  video.addEventListener("error", hideSound);
+  if (first !== "720") {
+    queue.shift();
+    swapTo(first);
+  } else {
+    queue.shift();
+  }
+  if (!autoplay) {
+    video.removeAttribute("autoplay");
+    video.preload = "metadata";
+  }
+
+  // If a file can't be played (missing, unsupported), try the next size down.
+  const fail = () => {
+    if (queue.length) {
+      swapTo(queue.shift());
+      sync();
+    } else if (playBtn) {
+      playBtn.hidden = true; // nothing to play: the poster stays up
+    }
+  };
+  video.addEventListener("error", fail);
   const lastSource = video.querySelector("source:last-of-type");
-  if (lastSource) lastSource.addEventListener("error", hideSound);
+  if (lastSource) lastSource.addEventListener("error", () => { if (!video.currentSrc || video.networkState === 3) fail(); });
+
+  const label = () => {
+    if (!playBtn) return;
+    const playing = !video.paused;
+    playBtn.textContent = playing ? "Pause" : "Play";
+    playBtn.setAttribute("aria-pressed", String(!playing));
+  };
+  ["play", "playing", "pause", "ended"].forEach((e) => video.addEventListener(e, label));
+  label();
+
+  if (playBtn) {
+    playBtn.addEventListener("click", () => {
+      userPaused = !video.paused; // playing → pause; paused → play
+      if (userPaused) video.pause();
+      else play().catch(() => {});
+      label();
+    });
+  }
 
   if (soundBtn) {
     soundBtn.addEventListener("click", () => {
@@ -72,12 +107,21 @@ function showreel() {
       video.muted = !on;
       soundBtn.textContent = on ? "Sound — on" : "Sound — off";
       soundBtn.setAttribute("aria-pressed", String(on));
-      if (on) {
-        wanted = true;
+      if (on && video.paused) {
+        userPaused = false;
         play().catch(() => {});
       }
     });
   }
+
+  document.addEventListener("visibilitychange", sync);
+  if (autoplay) sync();
+  return {
+    setOnScreen(v) {
+      onScreen = v;
+      sync();
+    },
+  };
 }
 
 /*
@@ -107,7 +151,11 @@ function works() {
 }
 
 function init() {
-  showreel();
+  const reel = showreel();
+  const video = document.getElementById("hero-video");
+  if (video && "IntersectionObserver" in window) {
+    new IntersectionObserver(([entry]) => reel.setOnScreen(entry.isIntersecting)).observe(video);
+  }
   works();
 }
 

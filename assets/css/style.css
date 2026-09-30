@@ -96,7 +96,8 @@ h1 { margin: 0; font-weight: inherit; }
   padding: 0 var(--pad-x) calc(24px + env(safe-area-inset-bottom));
 }
 .hero__links { display: flex; gap: 12px 28px; flex-wrap: wrap; }
-.hero__sound {
+.hero__controls { display: flex; gap: 24px; }
+.hero__btn {
   appearance: none;
   background: none;
   border: none;
@@ -104,8 +105,8 @@ h1 { margin: 0; font-weight: inherit; }
   cursor: pointer;
   color: var(--paper);
 }
-.hero__sound:hover { opacity: .6; }
-.hero__sound[hidden] { display: none; }
+.hero__btn:hover { opacity: .6; }
+.hero__btn[hidden] { display: none; }
 
 /* ─── Selected works ─── */
 .topbar {
