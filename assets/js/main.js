@@ -116,8 +116,10 @@ function showreel() {
     if (queue.length) {
       swapTo(queue.shift());
       sync();
-    } else if (playBtn) {
-      playBtn.hidden = true; // nothing to play: the poster stays up
+    } else {
+      // Nothing can play inline: offer the file itself in its own tab.
+      const link = document.getElementById("reel-fallback");
+      if (link) link.hidden = false;
     }
   };
   video.addEventListener("error", fail);
