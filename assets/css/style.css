@@ -94,7 +94,13 @@ h1, h2 { margin: 0; font-weight: 600; }
 .hero__buttons { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; }
 .button {
   display: inline-block;
-  padding: 12px 22px;
+  padding: 10px 20px;
+  /* Same type as the Selected works page. */
+  font-family: var(--mono);
+  font-size: 15px;
+  line-height: 1.6;
+  letter-spacing: 0;
+  text-transform: none;
   border: 1px solid rgba(241, 238, 232, .75);
   color: var(--fg);
   transition: background .2s, color .2s, border-color .2s;
