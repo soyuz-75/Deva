@@ -1,66 +1,62 @@
-# Deva, director's portfolio
+# Deva Rocca, director's portfolio
 
-A single-page site for Deva, *réalisatrice*. It's built from the Claude Design mock-up `Deva Site.dc.html`:
+A small static site for Deva Rocca:
 
-- a full-screen showreel that autoplays silently, with a **Son — on/off** toggle for sound
-- an editorial layout of 9 numbered photographs
-- a contact footer
+- **Home** (`index.html`): the showreel full screen, the name on the right, buttons to **Selected works** and **Photos**, the Instagram link (@hwdev), the email, and Pause and Sound controls
+- **Selected works** (`works.html`): a plain list of titles; clicking one plays the YouTube video in place under its title
+- **Photos** (`photos.html`): 15 photographs in a staggered sequence
 
-It's plain HTML, CSS and JS with no build step, so it deploys as-is to Netlify, Vercel, Cloudflare Pages or GitHub Pages.
+Plain HTML, CSS and JS, no framework.
 
 ```
-index.html               page markup (photos, contact links)
-assets/css/style.css     styles (colours, fonts and spacing from the design)
-assets/js/main.js        showreel autoplay + sound toggle
-scripts/prepare-media.sh converts source media into web-ready files (ffmpeg)
-media/source/            originals: showreel export + photos
-media/web/               generated files the site actually loads
-netlify.toml             hosting config (long cache on media)
+index.html, works.html, photos.html   the three pages
+assets/css/style.css                  styles for all pages
+assets/js/main.js                     showreel (autoplay, sizes, Play/Pause, Sound) + click-to-play videos
+scripts/build.sh                      copies the publishable files into dist/ (used by Netlify)
+scripts/prepare-media.sh              converts source media into web-ready files (ffmpeg)
+media/source/                         originals (never published)
+media/web/                            generated files the site loads
+netlify.toml                          hosting config
 ```
 
-## Preview locally
+## Deploy (Netlify)
 
-```sh
-npm run dev              # http://localhost:3000
-```
+`netlify.toml` runs `scripts/build.sh`, which copies only the pages, `assets/` and `media/web/` into `dist/`, and Netlify serves `dist/`. In Netlify: Add new site, Import an existing project, GitHub, pick this repo, and keep the settings it reads from `netlify.toml`. Every push to the production branch redeploys.
+
+## Adding or changing a video
+
+In `works.html`, each video is one `<li class="film">` with a link whose `data-video` is the YouTube id (the part after `youtu.be/`) and whose `href` is the full YouTube address. Copy a `<li>` and change both.
 
 ## Updating the media
 
-1. Drop the new showreel export (`.mov` or `.mp4`) in `media/source/video/`, or photos in `media/source/photos/`.
-2. Run `npm run media` (or `bash scripts/prepare-media.sh`, which also takes `video` or `photos` as an argument).
-3. For a new photo, add a `<figure>` in `index.html` that points at `media/web/photos/<name>-{1000,2000}.{webp,jpg}`. File names are lower-cased and spaces become dashes, so `IMG_3814.jpg` becomes `img-3814`.
+The originals (showreel export, full-size photos) are **not** in the repo: keep them in Google Drive (`Deva/Videos`, `Deva/Photos`). To change the site's media:
 
-You need ffmpeg: `brew install ffmpeg`, or `pip install imageio-ffmpeg`, which the script finds on its own.
+1. Put the new showreel (`.mov` or `.mp4`) in `media/source/video/`, or photos in `media/source/photos/`. These folders are git-ignored.
+2. Run `npm run media` (or `bash scripts/prepare-media.sh video` / `photos`). It needs ffmpeg: `brew install ffmpeg`, or `pip install imageio-ffmpeg`, which the script finds on its own.
+3. Commit what it writes to `media/web/`. For a new photo, add a `<figure>` to `photos.html` that points at `media/web/photos/<name>-{1000,2000}.{webp,jpg}` (file names are lower-cased, spaces and underscores become dashes).
+
+To rebuild the reel from a new export: `VIDEO_SRC=~/Downloads/SHOWREELV3.mov npm run media -- video`.
 
 ### Showreel files
 
-Source video exports stay in Google Drive (`Deva/Videos`). They're git-ignored because GitHub's upload page rejects anything over 25 MB. Only the compressed web versions are committed:
-
 | File | Used on | Size |
 | --- | --- | --- |
-| `media/web/video/showreel-1080.mp4` | screens ≥ 1000 px wide | ~27 MB |
+| `media/web/video/showreel-1080.mp4` | screens 1000 px wide and up | ~27 MB |
 | `media/web/video/showreel-720.mp4` | phones, small screens, and fallback | ~14 MB |
+| `media/web/video/showreel-480.mp4` | data saver and slow connections | ~3 MB |
 
-They're currently built from `SHOWREELV1.mov` (1080p, HEVC). HEVC doesn't play in Chrome or Firefox, which is another reason the script always converts to H.264. To update the reel, download the new export from Drive and run:
+All are H.264 + AAC with the index at the front (`faststart`), so they play in every browser and start while downloading. HEVC exports (like the original `.mov`) don't play in Chrome or Firefox, which is why the script always re-encodes.
 
-```sh
-VIDEO_SRC=~/Downloads/SHOWREELV3.mov npm run media -- video
-```
+## How the showreel plays
 
-Then commit `media/web/video/` with git or GitHub Desktop (limit 100 MB per file). GitHub's web upload page caps files at 25 MB, so the 1080p file doesn't fit there.
-
-## Why the showreel didn't play right away, and what fixed it
-
-1. **The design fell back to a Google Drive player.** Drive's `/preview` iframe never autoplays, and it's slow. The site now plays a video file it hosts itself.
-2. **The file's index was at the end.** Straight from the editor, `SHOWREELV1.v2.mov` had its `moov` atom after 16 MB of video data, so the browser had to download almost all of it before showing frame one. The script re-encodes it with `-movflags +faststart`, which puts the index first, and outputs H.264 + AAC (1080p for desktop, 720p for phones).
-3. **Autoplay rules.** Browsers only autoplay video that is `muted` and, on iOS, `playsinline`. The markup has `autoplay muted loop playsinline`, and `main.js` also sets the `muted` property, calls `play()`, and retries on the first tap or scroll when the browser still refuses (for example iOS Low Power Mode). Sound only turns on from the **Son** button, because browsers only allow sound after a user click.
-4. **No black flash.** A poster frame is preloaded and sits behind the video until it paints.
-5. **Being polite.** The reel pauses when it's scrolled off-screen or the tab is hidden. With *Reduce motion* or data-saver turned on, it doesn't autoplay; the poster shows instead.
-
-Tested in headless Chromium: the reel is playing about 350 ms after navigation, sound toggles, it pauses off-screen, and there's no horizontal scroll at 390 px.
+1. **Muted and inline.** Browsers only autoplay muted video, and iOS needs `playsinline`. Sound turns on from the **Sound** button (a click is required).
+2. **Right size.** `assets/js/main.js` picks 1080p, 720p or 480p (data saver, 2G/3G) and steps down a size if a file fails.
+3. **Safari without Range support.** If a browser rejects the file, the script downloads the small file and plays it from memory.
+4. **Autoplay blocked** (iPhone Low Power Mode, "never auto-play" settings, some in-app browsers): the poster stays up, a **Play** button shows, and a tap anywhere starts the reel. On Safari and iPhone, a silent looping picture of the reel plays in the meantime when the browser allows it.
+5. **Nothing can play:** an **Open showreel** link opens the video in its own tab.
+6. **Polite.** It pauses off-screen and in background tabs, and there's always a Pause button. A poster frame is preloaded so there's never a black box.
 
 ## To do before launch
 
-- [ ] Real email and Instagram link in the footer (currently `hello@deva.film` and `#`, as in the mock-up)
-- [ ] Alt text describing each photo
+- [x] Email address set to rokdev3@gmail.com
 - [ ] Favicon and custom domain

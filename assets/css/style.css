@@ -1,57 +1,60 @@
-/* Values taken from the Claude Design mock-up "Deva Site.dc.html". */
+/* Deva Rocca: styles for index.html, works.html and photos.html. */
+/* Home: full-bleed showreel, name at the right. Selected works: plain sheet of underlined titles that play in place. Photos: dark sequence. */
 :root {
-  --black: #0B0B0B;
-  --paper: #F1EEE8;
-  --ink: #141414;
-  --muted: #8A867E;
-  --rule: #D9D5CD;
+  --bg: #0B0B0B;
+  --fg: #F1EEE8;
+  --muted: #9B978F;
+  --rule: #2A2825;
   --accent: #B8862B;
-  --sans: Archivo, Helvetica, Arial, sans-serif;
-  --mono: "JetBrains Mono", ui-monospace, monospace;
-  --pad-x: clamp(16px, 4vw, 56px);
-  --gap-y: clamp(56px, 11vw, 160px);
-  --row-gap: clamp(56px, 6vw, 80px);
+  --display: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --sheet: #F3F3F1;
+  --sheet-ink: #111111;
+  --gutter: clamp(18px, 4vw, 56px);
+  color-scheme: dark;
 }
-
 *, *::before, *::after { box-sizing: border-box; }
-
-html, body { margin: 0; padding: 0; background: var(--black); }
-
+html { scroll-padding-top: 0; }
 body {
-  font-family: var(--sans);
-  color: var(--ink);
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--display);
   -webkit-font-smoothing: antialiased;
 }
-
+[hidden] { display: none !important; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 a { color: inherit; text-decoration: none; }
 a:hover { color: var(--accent); }
-::selection { background: #1A1A1A; color: var(--paper); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+h1, h2 { margin: 0; font-weight: 600; }
 
 .mono {
   font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-}
-
-.wordmark {
-  font-family: var(--sans);
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
 }
+.plain-btn {
+  appearance: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+.plain-btn:hover { color: var(--accent); }
 
-/* ─── Hero ─── */
+/* ─── Home ─── */
 .hero {
   position: relative;
-  width: 100%;
   height: 100vh;
   height: 100svh;
-  min-height: 420px;
+  min-height: 460px;
   overflow: hidden;
-  color: var(--paper);
-  /* Same frame as the poster, shown before the <video> element paints. */
   background: #000 url("../../media/web/video/showreel-poster.jpg") center / cover no-repeat;
 }
 .hero__video {
@@ -60,108 +63,145 @@ a:hover { color: var(--accent); }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  background: transparent;
 }
-.hero__fade {
+.hero__still { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+.hero__shade {
   position: absolute;
-  inset: 0 0 auto 0;
-  height: 140px;
+  inset: 0;
   pointer-events: none;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, .45), transparent);
+  background: rgba(0, 0, 0, .38);
 }
-.hero__header {
+.hero__center {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: clamp(16px, 2.4vw, 28px);
+  padding-inline: var(--gutter);
+}
+.name {
+  font-size: clamp(20px, 3vw, 40px);
+  font-stretch: 112%;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-align: right;
+  text-wrap: balance;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, .35);
+}
+.hero__buttons { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 12px; }
+.button {
+  display: inline-block;
+  padding: 12px 22px;
+  border: 1px solid rgba(241, 238, 232, .75);
+  color: var(--fg);
+  transition: background .2s, color .2s, border-color .2s;
+}
+.button:hover { background: var(--fg); border-color: var(--fg); color: var(--bg); }
+
+.hero__footer {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 20px;
-  padding: 22px 26px;
-}
-.brand {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
   flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 0 var(--gutter) 24px;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, .5);
 }
-.brand .mono { opacity: .8; }
-.nav { display: flex; gap: 24px; }
+.hero__controls { display: flex; gap: 12px 24px; }
+.hero__links { display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px 28px; min-width: 0; }
 
-.hero__sound {
-  position: absolute;
-  right: 26px;
-  bottom: 24px;
-  appearance: none;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  color: var(--paper);
+/* ─── Selected works: a plain white sheet, plain text, underlined links ─── */
+body.page-works { background: var(--sheet); color: var(--sheet-ink); }
+.works {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  padding-inline: var(--gutter);
+  font-family: var(--mono);
+  font-size: 15px;
+  line-height: 1.6;
 }
-.hero__sound:hover { opacity: .6; }
-.hero__sound[hidden] { display: none; }
-.hero__label {
-  position: absolute;
-  left: 26px;
-  bottom: 24px;
-  pointer-events: none;
+.works a { color: inherit; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.works a:hover { color: var(--sheet-ink); text-decoration-thickness: 3px; }
+.works :focus-visible { outline-color: var(--sheet-ink); }
+.works .topbar { padding-block: 22px; }
+.works .wordmark { font-family: var(--mono); font-size: 15px; font-stretch: 100%; font-weight: 400; letter-spacing: 0; text-transform: none; }
+.works .topbar nav { gap: 6px 22px; }
+.works__title { font-size: 15px; font-weight: 400; margin: clamp(56px, 10vw, 120px) 0 28px; }
+.films { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; font-size: clamp(17px, 2.4vw, 22px); line-height: 1.35; }
+.film a { overflow-wrap: anywhere; }
+.works .foot { display: flex; gap: 6px 22px; }
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding-block: 24px;
 }
+.wordmark {
+  font-size: 16px;
+  font-stretch: 112%;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.topbar nav { display: flex; gap: 12px 26px; flex-wrap: wrap; }
+.works__title { color: inherit; }
+
+.foot {
+  margin-top: auto;
+  padding-block: clamp(48px, 8vw, 96px) 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
+
 
 /* ─── Photos ─── */
-.photos {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap-y);
-  padding: var(--gap-y) var(--pad-x);
-  background: var(--paper);
+.photos { min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column; padding-inline: var(--gutter); }
+.shots {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: clamp(28px, 5vw, 72px) clamp(12px, 2vw, 28px);
+  align-items: start;
+  padding-top: 12px;
 }
-.photo {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.photo img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-.photo figcaption {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--muted);
+.shot { margin: 0; grid-column: 1 / -1; min-width: 0; }
+.shot img { display: block; width: 100%; height: auto; }
+@media (min-width: 760px) {
+  .shot--02 { grid-column: 1 / span 7; }
+  .shot--03 { grid-column: 9 / span 4; margin-top: clamp(0px, 10vw, 140px); }
+  .shot--04 { grid-column: 3 / span 10; }
+  .shot--05 { grid-column: 1 / span 5; align-self: end; }
+  .shot--06 { grid-column: 7 / span 6; }
+  .shot--07 { grid-column: 1 / span 10; }
+  .shot--08 { grid-column: 1 / span 7; }
+  .shot--09 { grid-column: 9 / span 4; margin-top: clamp(0px, 8vw, 120px); }
+  .shot--10 { grid-column: 1 / span 5; }
+  .shot--11 { grid-column: 7 / span 6; margin-top: clamp(0px, 8vw, 120px); }
+  .shot--12 { grid-column: 2 / span 10; }
+  .shot--13 { grid-column: 1 / span 7; }
+  .shot--14 { grid-column: 9 / span 4; margin-top: clamp(0px, 10vw, 140px); }
+  .shot--15 { grid-column: 3 / span 8; }
 }
 
-.row { display: flex; }
-.row--a { flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: var(--row-gap) 4%; }
-.row--b { justify-content: flex-end; }
-.row--c { flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: var(--row-gap) 6%; }
-.row--d { justify-content: flex-start; padding-left: clamp(0px, 8vw, 140px); }
-.row--e { flex-wrap: wrap; justify-content: space-around; align-items: flex-start; gap: var(--row-gap) 4%; }
-
-.photo--02 { flex: 0 1 56%; min-width: min(100%, 420px); }
-.photo--03 { flex: 0 1 32%; min-width: min(100%, 300px); padding-top: clamp(0px, 14vw, 220px); }
-.photo--04 { flex: 0 1 64%; min-width: min(100%, 420px); }
-.photo--05 { flex: 0 1 34%; min-width: min(100%, 300px); }
-.photo--06 { flex: 0 1 46%; min-width: min(100%, 360px); }
-.photo--07 { flex: 0 1 72%; min-width: min(100%, 420px); }
-.photo--08 { flex: 0 1 44%; min-width: min(100%, 360px); }
-.photo--09 { flex: 0 1 30%; min-width: min(100%, 280px); padding-top: clamp(0px, 10vw, 160px); }
-
-/* ─── Footer ─── */
-.footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 24px;
-  flex-wrap: wrap;
-  padding: 40px var(--pad-x) 48px;
-  border-top: 1px solid var(--rule);
-  background: var(--paper);
-  color: var(--ink);
+@media (prefers-reduced-motion: reduce) {
+  .button { transition: none; }
 }
-.footer__links { display: flex; gap: 26px; flex-wrap: wrap; }
-.muted { color: var(--muted); }
+/* In-place YouTube player under a title on the works page. */
+.film__player { margin: 16px 0 26px; max-width: min(100%, 960px); }
+.film__player iframe { display: block; width: 100%; aspect-ratio: 16 / 9; border: 0; background: #000; }
+.film__close { display: block; margin-top: 10px; font: inherit; font-size: 13px; }
+.film a[aria-expanded="true"] { text-decoration-thickness: 3px; }
+
