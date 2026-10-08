@@ -174,27 +174,46 @@ function showreel() {
 }
 
 /*
- * Selected works: each card shows the YouTube thumbnail and only loads the
- * player when clicked, so eight embeds don't slow the page down.
- * Playing one stops any other that is already playing.
+ * Selected works: every title is a normal YouTube link (it still works with
+ * JavaScript off, or with a middle-click / ctrl-click). A plain click plays the
+ * video in place, under its title, and loads the player only then so the page
+ * stays light. Opening one closes any other; clicking the title again closes it.
  */
 function works() {
-  const buttons = document.querySelectorAll(".work__play[data-video]");
-  buttons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".work iframe").forEach((f) => {
-        const b = f.closest(".work");
-        f.replaceWith(b._btn);
-      });
+  const links = document.querySelectorAll(".film a[data-video]");
+  if (!links.length) return;
+
+  const close = (link) => {
+    const li = link.closest(".film");
+    const box = li.querySelector(".film__player");
+    if (box) box.remove();
+    link.setAttribute("aria-expanded", "false");
+  };
+
+  links.forEach((link) => {
+    link.setAttribute("aria-expanded", "false");
+    link.addEventListener("click", (e) => {
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+      e.preventDefault();
+      const wasOpen = link.getAttribute("aria-expanded") === "true";
+      links.forEach((l) => { if (l.getAttribute("aria-expanded") === "true") close(l); });
+      if (wasOpen) return;
+
+      const box = document.createElement("div");
+      box.className = "film__player";
       const iframe = document.createElement("iframe");
-      iframe.src = "https://www.youtube-nocookie.com/embed/" + btn.dataset.video + "?autoplay=1&rel=0&modestbranding=1&playsinline=1";
-      iframe.title = btn.getAttribute("aria-label") || "Video";
+      iframe.src = "https://www.youtube-nocookie.com/embed/" + link.dataset.video + "?autoplay=1&rel=0&playsinline=1";
+      iframe.title = link.textContent;
       iframe.allow = "autoplay; encrypted-media; picture-in-picture; fullscreen";
       iframe.allowFullscreen = true;
-      const li = btn.closest(".work");
-      li._btn = btn;
-      btn.replaceWith(iframe);
-      iframe.focus();
+      const closeBtn = document.createElement("button");
+      closeBtn.type = "button";
+      closeBtn.className = "plain-btn film__close";
+      closeBtn.textContent = "close";
+      closeBtn.addEventListener("click", () => { close(link); link.focus(); });
+      box.append(iframe, closeBtn);
+      link.after(box);
+      link.setAttribute("aria-expanded", "true");
     });
   });
 }

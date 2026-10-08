@@ -2,35 +2,30 @@
 
 A small static site for Deva Rocca:
 
-- **Home** (`index.html`): the showreel full screen and autoplaying silently, the name, a **Selected works** button, the Instagram link (@hwdev) and email, and a **Sound — on/off** toggle
-- **Selected works** (`works.html`): a grid of YouTube videos, played inside the site (the player loads on click)
+- **Home** (`index.html`): the showreel full screen, the name on the right, buttons to **Selected works** and **Photos**, the Instagram link (@hwdev), the email, and Pause and Sound controls
+- **Selected works** (`works.html`): a plain list of titles; clicking one plays the YouTube video in place under its title
+- **Photos** (`photos.html`): 15 photographs in a staggered sequence
 
-Plain HTML, CSS and JS with no build step, so it deploys as-is to Netlify, Vercel, Cloudflare Pages or GitHub Pages.
+Plain HTML, CSS and JS, no framework.
 
 ```
-index.html               home: showreel, name, links
-works.html               selected works (YouTube)
-assets/css/style.css     styles
-assets/js/main.js        showreel autoplay, sound toggle, click-to-play videos
-scripts/prepare-media.sh converts source media into web-ready files (ffmpeg)
-media/source/            originals: showreel export + photos
-media/web/               generated files the site actually loads
-netlify.toml             hosting config (long cache on media)
+index.html, works.html, photos.html   the three pages
+assets/css/style.css                  styles for all pages
+assets/js/main.js                     showreel (autoplay, sizes, Play/Pause, Sound) + click-to-play videos
+scripts/build.sh                      copies the publishable files into dist/ (used by Netlify)
+scripts/prepare-media.sh              converts source media into web-ready files (ffmpeg)
+media/source/                         originals (never published)
+media/web/                            generated files the site loads
+netlify.toml                          hosting config
 ```
+
+## Deploy (Netlify)
+
+`netlify.toml` runs `scripts/build.sh`, which copies only the pages, `assets/` and `media/web/` into `dist/`, and Netlify serves `dist/`. In Netlify: Add new site, Import an existing project, GitHub, pick this repo, and keep the settings it reads from `netlify.toml`. Every push to the production branch redeploys.
 
 ## Adding or changing a video
 
-In `works.html`, each video is one `<li class="work">` whose button has `data-video="<YouTube id>"` (the part after `youtu.be/`). Copy a `<li>`, change the id in `data-video` and in the thumbnail `src`, and renumber.
-
-## If the showreel doesn't play
-
-`assets/js/main.js` picks the file size itself (1080p, 720p, or 480p on data saver / 2G-3G), steps down a size if a file can't be played, and shows a **Play** button whenever the browser refuses to autoplay (iOS Low Power Mode, "never auto-play" settings, some in-app browsers). The same button pauses the reel.
-
-## Preview locally
-
-```sh
-npm run dev              # http://localhost:3000
-```
+In `works.html`, each video is one `<li class="film">` with a link whose `data-video` is the YouTube id (the part after `youtu.be/`) and whose `href` is the full YouTube address. Copy a `<li>` and change both.
 
 ## Updating the media
 

@@ -1,14 +1,16 @@
-# Static site: no build step. Also works as-is on Vercel, Cloudflare Pages or GitHub Pages.
+# Static site, no framework. The build step only copies what visitors need into
+# dist/, so the original photos and video in media/source/ are never published.
 [build]
-  publish = "."
+  command = "bash scripts/build.sh"
+  publish = "dist"
 
 [[headers]]
   for = "/media/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-    Accept-Ranges = "bytes"
+    Cache-Control = "public, max-age=604800"
 
 [[headers]]
   for = "/*.mp4"
   [headers.values]
     Content-Type = "video/mp4"
+    Accept-Ranges = "bytes"

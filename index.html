@@ -4,36 +4,28 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Deva Rocca</title>
-  <meta name="description" content="Deva Rocca, director. Showreel and selected works.">
+  <meta name="description" content="Deva Rocca, director. Showreel, selected works and photos.">
   <meta name="theme-color" content="#0B0B0B">
+  <meta name="color-scheme" content="dark">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Deva Rocca">
-  <meta property="og:description" content="Director. Showreel and selected works.">
+  <meta property="og:description" content="Director. Showreel, selected works and photos.">
   <meta property="og:image" content="media/web/video/showreel-poster.jpg">
   <link rel="preload" as="image" href="media/web/video/showreel-poster.jpg" fetchpriority="high">
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css">
   <script src="assets/js/main.js" defer></script>
 </head>
-<body class="home">
-  <section class="hero" aria-label="Showreel">
+<body class="page-home">
+  <section class="hero" id="home" aria-label="Showreel">
     <!--
-      Autoplay needs muted + playsinline + autoplay. The files are faststart
-      H.264/AAC MP4s built by scripts/prepare-media.sh: 1080p on wide screens,
-      720p on phones (and as the fallback). Sound is turned on with "Sound".
+      Autoplay needs muted + playsinline. assets/js/main.js picks 1080p, 720p or
+      480p, steps down if a file fails, and shows Play when a browser (e.g. iPhone
+      Low Power Mode) refuses to autoplay. Files are built by scripts/prepare-media.sh.
     -->
-    <video
-      class="hero__video"
-      id="hero-video"
-      autoplay
-      muted
-      loop
-      playsinline
-      preload="auto"
-      disablepictureinpicture
+    <video class="hero__video" id="hero-video" autoplay muted loop playsinline webkit-playsinline x5-playsinline preload="auto" disablepictureinpicture
       poster="media/web/video/showreel-poster.jpg"
       data-src-1080="media/web/video/showreel-1080.mp4"
       data-src-720="media/web/video/showreel-720.mp4"
@@ -43,20 +35,23 @@
     <div class="hero__shade" aria-hidden="true"></div>
 
     <div class="hero__center">
-      <h1 class="wordmark wordmark--xl">Deva Rocca</h1>
-      <a class="button mono" href="works.html">Selected works</a>
+      <h1 class="name">Deva Rocca</h1>
+      <div class="hero__buttons">
+        <a class="button mono" href="works.html">Selected works</a>
+        <a class="button mono" href="photos.html">Photos</a>
+      </div>
     </div>
 
-    <footer class="hero__footer mono">
+    <div class="hero__footer mono">
       <div class="hero__links">
         <a href="https://www.instagram.com/hwdev/" target="_blank" rel="noopener">@hwdev</a>
-        <a href="mailto:rokdev3@gmail.com">rokdev3@gmail.com</a>
+        <a class="email" href="mailto:rokdev3@gmail.com">rokdev3@gmail.com</a>
       </div>
       <div class="hero__controls">
-        <button class="hero__btn mono" id="play-toggle" type="button" aria-pressed="false">Pause</button>
-        <button class="hero__btn mono" id="sound-toggle" type="button" aria-pressed="false">Sound — off</button>
+        <button class="plain-btn" id="play-toggle" type="button" aria-pressed="false">Pause</button>
+        <button class="plain-btn" id="sound-toggle" type="button" aria-pressed="false">Sound — off</button>
       </div>
-    </footer>
+    </div>
   </section>
 </body>
 </html>
